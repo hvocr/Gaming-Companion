@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMPANION // OPS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#030803; --surface:#060f06; --panel:#091409; --panel-hi:#0c1e0c;
+  --border:#152815; --border-hi:#1f4a1f;
+  --green:#33e85a; --green-dim:#1a6b2e; --green-glow:rgba(51,232,90,0.07); --green-glow2:rgba(51,232,90,0.16);
+  --amber:#e8a020; --amber-dim:#7a5010; --amber-glow:rgba(232,160,32,0.07); --amber-glow2:rgba(232,160,32,0.18);
+  --red:#e84040;
+  --text:#7dc98a; --text-hi:#c5edcc; --text-lo:#2e5c38;
+  --font-hud:'Orbitron',sans-serif; --font-mono:'Share Tech Mono',monospace; --font-body:'Exo 2',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{color:var(--text);font-family:var(--font-body);height:100vh;}
+body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.10) 3px,rgba(0,0,0,.10) 4px);}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(51,232,90,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(51,232,90,.018) 1px,transparent 1px);
+  background-size:52px 52px;}
+
+.app{position:relative;z-index:1;display:grid;grid-template-rows:48px 1fr;grid-template-columns:220px 1fr 268px;height:100vh;overflow:hidden;}
+
+/* HEADER */
+header{grid-column:1/-1;display:flex;align-items:center;gap:18px;padding:0 16px;
+  background:var(--surface);border-bottom:1px solid var(--border-hi);position:relative;overflow:hidden;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--green) 25%,var(--green) 75%,transparent);opacity:.35;}
+.logo{font-family:var(--font-hud);font-size:12px;font-weight:700;letter-spacing:5px;color:var(--green);white-space:nowrap;flex-shrink:0;}
+.logo-sep{color:var(--amber);}
+.header-mid{flex:1;display:flex;align-items:center;gap:10px;overflow:hidden;}
+.active-tag{display:none;align-items:center;gap:7px;padding:2px 13px 2px 9px;
+  border:1px solid var(--border-hi);background:var(--green-glow);
+  font-family:var(--font-mono);font-size:10px;color:var(--green);letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px;}
+.active-tag.show{display:flex;}
+.tag-arr{color:var(--amber);font-size:7px;}
+.searching-pill{display:none;align-items:center;gap:6px;padding:2px 10px;
+  border:1px solid var(--amber-dim);background:var(--amber-glow);
+  font-family:var(--font-mono);font-size:9px;color:var(--amber);letter-spacing:2px;animation:pulse-amber 1s ease-in-out infinite;}
+.searching-pill.show{display:flex;}
+@keyframes pulse-amber{0%,100%{opacity:1}50%{opacity:.5}}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:16px;font-family:var(--font-mono);font-size:10px;color:var(--text-lo);flex-shrink:0;}
+.status-dot{display:flex;align-items:center;gap:5px;color:var(--green);}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:blink 2.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.settings-btn{background:none;border:1px solid transparent;color:var(--text-lo);cursor:pointer;font-size:13px;padding:3px 6px;transition:all .2s;}
+.settings-btn:hover{border-color:var(--border-hi);color:var(--text);}
+
+/* SIDEBAR */
+.sidebar{border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sidebar-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--text-lo);}
+.add-btn{width:22px;height:22px;border:1px solid var(--border-hi);background:transparent;color:var(--green);cursor:pointer;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.add-btn:hover{background:var(--green-glow2);border-color:var(--green);}
+.games-list{flex:1;overflow-y:auto;padding:5px;}
+.games-list::-webkit-scrollbar{width:2px;}
+.games-list::-webkit-scrollbar-thumb{background:var(--border-hi);}
+.no-games{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:24px;text-align:center;gap:10px;}
+.no-games-icon{font-size:28px;opacity:.2;}
+.no-games-title{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);text-transform:uppercase;}
+.no-games-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-lo);line-height:1.8;}
+.game-card{padding:9px 10px;margin-bottom:3px;border:1px solid transparent;cursor:pointer;transition:all .16s;position:relative;overflow:hidden;}
+.game-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:transparent;transition:background .16s;}
+.game-card:hover{border-color:var(--border);background:var(--panel);}
+.game-card.active{border-color:var(--border-hi);background:var(--green-glow);}
+.game-card.active::before{background:var(--green);box-shadow:0 0 8px var(--green);}
+.gc-name{font-family:var(--font-body);font-weight:600;font-size:12px;color:var(--text-hi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:20px;}
+.gc-meta{display:flex;gap:8px;margin-top:3px;font-family:var(--font-mono);font-size:9px;color:var(--text-lo);}
+.gc-platform{color:var(--amber);}
+.gc-del{position:absolute;right:7px;top:50%;transform:translateY(-50%);background:none;border:none;color:transparent;cursor:pointer;font-size:11px;padding:2px 4px;transition:all .15s;}
+.game-card:hover .gc-del{color:var(--text-lo);}
+.gc-del:hover{color:var(--red)!important;}
+
+/* CHAT */
+.chat-area{display:flex;flex-direction:column;background:var(--bg);overflow:hidden;position:relative;}
+.apikey-warn{display:none;align-items:center;gap:10px;padding:6px 14px;border-bottom:1px solid var(--amber-dim);background:var(--amber-glow);font-family:var(--font-mono);font-size:10px;color:var(--amber);flex-shrink:0;}
+.apikey-warn.show{display:flex;}
+.apikey-warn button{margin-left:auto;padding:2px 10px;border:1px solid var(--amber-dim);background:transparent;color:var(--amber);cursor:pointer;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;transition:all .15s;}
+.apikey-warn button:hover{background:var(--amber-glow2);border-color:var(--amber);}
+.quick-strip{padding:7px 13px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;gap:4px;overflow-x:auto;flex-shrink:0;}
+.quick-strip::-webkit-scrollbar{height:2px;}
+.quick-strip::-webkit-scrollbar-thumb{background:var(--border-hi);}
+.qbtn{padding:3px 11px;font-family:var(--font-mono);font-size:10px;letter-spacing:.5px;border:1px solid var(--border-hi);background:transparent;color:var(--text-lo);cursor:pointer;transition:all .14s;white-space:nowrap;flex-shrink:0;}
+.qbtn:hover{border-color:var(--green);color:var(--green);background:var(--green-glow);}
+.qbtn.amber:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-glow);}
+.qbtn:disabled{opacity:.3;cursor:not-allowed;}
+.pacing-bar{display:flex;align-items:center;gap:7px;padding:5px 13px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;}
+.pacing-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);}
+.pbtn{padding:2px 10px;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;border:1px solid var(--border);background:transparent;color:var(--text-lo);cursor:pointer;transition:all .15s;}
+.pbtn.on{border-color:var(--green);color:var(--green);background:var(--green-glow);}
+.pbtn:hover:not(.on){border-color:var(--border-hi);color:var(--text);}
+.msgs{flex:1;overflow-y:auto;padding:18px 18px 10px;display:flex;flex-direction:column;gap:13px;scroll-behavior:smooth;}
+.msgs::-webkit-scrollbar{width:3px;}
+.msgs::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:2px;}
+.boot-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;text-align:center;padding:40px;animation:fadeUp .5s ease;}
+.boot-icon{font-size:36px;opacity:.18;}
+.boot-title{font-family:var(--font-hud);font-size:11px;font-weight:700;letter-spacing:5px;color:var(--green);text-transform:uppercase;}
+.boot-sub{font-family:var(--font-mono);font-size:11px;color:var(--text-lo);line-height:1.9;max-width:360px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes scanIn{from{opacity:0;clip-path:inset(100% 0 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+.msg{display:flex;flex-direction:column;max-width:90%;animation:scanIn .22s ease;flex-shrink:0;}
+.msg.user{align-self:flex-end;align-items:flex-end;}
+.msg.ai{align-self:flex-start;align-items:flex-start;}
+.msg.system-msg{align-self:center;align-items:center;max-width:100%;}
+.msg-who{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);margin-bottom:4px;text-transform:uppercase;}
+.msg.user .msg-who{color:var(--amber-dim);}
+.msg-body{padding:10px 14px;font-size:13px;line-height:1.7;color:var(--text-hi);position:relative;word-break:break-word;}
+.msg.user .msg-body{background:var(--amber-glow);border:1px solid var(--amber-dim);border-right:2px solid var(--amber);}
+.msg.ai .msg-body{background:var(--green-glow);border:1px solid var(--border-hi);border-left:2px solid var(--green);}
+.msg.system-msg .msg-body{background:transparent;border:none;border-top:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--text-lo);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-align:center;padding:5px 24px;}
+.msg-body p{margin-bottom:8px;}.msg-body p:last-child{margin-bottom:0;}
+.msg-body strong{color:var(--green);font-weight:600;}
+.msg-body em{color:var(--amber);font-style:normal;}
+.msg-body code{background:rgba(0,0,0,.45);padding:1px 5px;font-family:var(--font-mono);font-size:11px;color:var(--amber);}
+.msg-body ul,.msg-body ol{padding-left:18px;margin:6px 0 8px;}
+.msg-body li{margin-bottom:4px;font-size:13px;}
+.msg-body h1{font-family:var(--font-mono);font-size:12px;letter-spacing:3px;color:var(--green);margin:10px 0 6px;text-transform:uppercase;}
+.msg-body h2,.msg-body h3{font-family:var(--font-mono);font-size:11px;letter-spacing:2px;color:var(--amber);margin:10px 0 5px;text-transform:uppercase;}
+.msg-body hr{border:none;border-top:1px solid var(--border-hi);margin:10px 0;}
+.msg-body a{color:var(--green);text-decoration:none;border-bottom:1px solid var(--green-dim);}
+.msg-body a:hover{color:var(--text-hi);}
+.spoiler-banner{display:flex;align-items:center;gap:9px;padding:7px 11px;margin-bottom:10px;border:1px solid var(--amber);background:var(--amber-glow2);font-family:var(--font-mono);font-size:10px;color:var(--amber);letter-spacing:1px;}
+.typing-msg{align-self:flex-start;flex-shrink:0;}
+.typing-dots{display:flex;gap:5px;padding:11px 15px;border:1px solid var(--border-hi);border-left:2px solid var(--green);background:var(--green-glow);}
+.tdot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:bounce 1.3s ease-in-out infinite;}
+.tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-7px);opacity:1}}
+.input-area{padding:10px 13px;border-top:1px solid var(--border-hi);background:var(--surface);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
+.chat-input{flex:1;background:var(--panel);border:1px solid var(--border);border-bottom:2px solid var(--border-hi);color:var(--text-hi);padding:9px 13px;font-family:var(--font-body);font-size:13px;resize:none;min-height:40px;max-height:120px;outline:none;line-height:1.5;transition:border-color .2s;}
+.chat-input:focus{border-color:var(--green);border-bottom-color:var(--green);}
+.chat-input::placeholder{color:var(--text-lo);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;}
+.send-btn{width:40px;height:40px;flex-shrink:0;border:1px solid var(--green);background:var(--green-glow);color:var(--green);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.send-btn:hover{background:var(--green-glow2);box-shadow:0 0 14px var(--green-glow2);}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;box-shadow:none;}
+.scroll-btn{position:absolute;bottom:65px;right:14px;width:28px;height:28px;border:1px solid var(--border-hi);background:var(--surface);color:var(--text-lo);cursor:pointer;font-size:14px;display:none;align-items:center;justify-content:center;transition:all .15s;z-index:10;}
+.scroll-btn.show{display:flex;}
+.scroll-btn:hover{border-color:var(--green);color:var(--green);}
+
+/* UTILITIES */
+.utilities{border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden;}
+.util-tabs{display:flex;border-bottom:1px solid var(--border-hi);flex-shrink:0;}
+.utab{flex:1;padding:10px 6px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text-lo);cursor:pointer;transition:all .16s;}
+.utab.on{color:var(--green);border-bottom-color:var(--green);background:var(--green-glow);}
+.utab:hover:not(.on){color:var(--text);}
+.upanel{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.upanel.on{display:flex;}
+.util-game-bar{padding:6px 12px;border-bottom:1px solid var(--border);flex-shrink:0;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.util-game-bar .gname{color:var(--green);overflow:hidden;text-overflow:ellipsis;}
+.notes-ta{flex:1;background:transparent;border:none;color:var(--text-hi);padding:12px 13px;font-family:var(--font-mono);font-size:11px;line-height:1.85;resize:none;outline:none;}
+.notes-ta::placeholder{color:var(--text-lo);}
+.notes-foot{padding:6px 12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.notes-chars{font-family:var(--font-mono);font-size:9px;color:var(--text-lo);}
+.save-btn{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--green);background:transparent;border:1px solid var(--border-hi);padding:3px 12px;cursor:pointer;transition:all .18s;}
+.save-btn:hover{background:var(--green-glow);border-color:var(--green);}
+.save-btn.saved{color:var(--amber);border-color:var(--amber-dim);}
+.tasks-top{padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.task-in{flex:1;background:var(--panel);border:1px solid var(--border);color:var(--text-hi);padding:5px 9px;font-family:var(--font-mono);font-size:11px;outline:none;transition:border-color .2s;}
+.task-in:focus{border-color:var(--amber);}
+.task-add-btn{width:27px;height:27px;border:1px solid var(--amber-dim);background:var(--amber-glow);color:var(--amber);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.task-add-btn:hover{border-color:var(--amber);background:var(--amber-glow2);}
+.tasks-list{flex:1;overflow-y:auto;padding:5px 12px;}
+.tasks-list::-webkit-scrollbar{width:2px;}
+.tasks-list::-webkit-scrollbar-thumb{background:var(--border-hi);}
+.tasks-empty{padding:20px 0;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-lo);}
+.task-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);animation:fadeUp .2s ease;}
+.task-chk{width:13px;height:13px;flex-shrink:0;margin-top:2px;border:1px solid var(--border-hi);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all .15s;}
+.task-chk.done{border-color:var(--amber);background:var(--amber-glow2);color:var(--amber);}
+.task-text{flex:1;font-family:var(--font-mono);font-size:11px;color:var(--text);line-height:1.5;word-break:break-word;}
+.task-text.done{color:var(--text-lo);text-decoration:line-through;}
+.task-del{background:none;border:none;color:transparent;cursor:pointer;font-size:10px;padding:0 3px;transition:all .14s;flex-shrink:0;}
+.task-item:hover .task-del{color:var(--text-lo);}
+.task-del:hover{color:var(--red)!important;}
+
+/* MODALS */
+.modal-bg{display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.82);align-items:center;justify-content:center;}
+.modal-bg.show{display:flex;animation:fadeUp .15s ease;}
+.modal{background:var(--panel-hi);border:1px solid var(--border-hi);width:390px;padding:26px;position:relative;}
+.modal::before{content:'';position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid var(--green);border-left:2px solid var(--green);}
+.modal::after{content:'';position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid var(--green);border-right:2px solid var(--green);}
+.modal-title{font-family:var(--font-hud);font-size:11px;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:22px;}
+.fgroup{margin-bottom:15px;}
+.flabel{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);margin-bottom:5px;text-transform:uppercase;}
+.finput,.fselect{width:100%;background:var(--surface);border:1px solid var(--border-hi);color:var(--text-hi);padding:8px 11px;font-family:var(--font-mono);font-size:12px;outline:none;transition:border-color .2s;}
+.finput:focus,.fselect:focus{border-color:var(--green);}
+.fselect option{background:var(--panel-hi);}
+.fhint{font-family:var(--font-mono);font-size:10px;color:var(--text-lo);margin-top:6px;line-height:1.7;}
+.fhint a{color:var(--green);}
+.modal-btns{display:flex;gap:8px;margin-top:22px;}
+.mbtn{padding:8px 20px;font-family:var(--font-hud);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:1px solid;cursor:pointer;transition:all .2s;}
+.mbtn-primary{border-color:var(--green);background:var(--green-glow);color:var(--green);}
+.mbtn-primary:hover{background:var(--green-glow2);box-shadow:0 0 18px var(--green-glow);}
+.mbtn-ghost{border-color:var(--border);background:transparent;color:var(--text-lo);}
+.mbtn-ghost:hover{border-color:var(--text-lo);color:var(--text);}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HEADER -->
+<header>
+  <div class="logo">COMPANION<span class="logo-sep">::</span>OPS</div>
+  <div class="header-mid">
+    <div class="active-tag" id="activeTag"><span class="tag-arr">▶</span><span id="activeTagName"></span></div>
+    <div class="searching-pill" id="searchPill">⟳ SEARCHING GUIDES...</div>
+  </div>
+  <div class="header-right">
+    <div class="status-dot"><div class="dot"></div> ONLINE</div>
+    <span id="clock">--:--</span>
+    <button class="settings-btn" onclick="openSettings()" title="Settings">⚙</button>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-head">
+    <span class="sidebar-lbl">// ACTIVE OPS</span>
+    <button class="add-btn" onclick="openAddGame()" title="Track new game">+</button>
+  </div>
+  <div class="games-list" id="gamesList"></div>
+</aside>
+
+<!-- CHAT -->
+<main class="chat-area">
+  <div class="apikey-warn" id="apiWarn">
+    ⚠ NO API KEY — COMPANION IS OFFLINE
+    <button onclick="openSettings()">SET KEY</button>
+  </div>
+  <div class="quick-strip">
+    <button class="qbtn"       onclick="quickAction('hint')">💡 Hint</button>
+    <button class="qbtn amber" onclick="quickAction('spoil')">⚠️ Spoil It</button>
+    <button class="qbtn"       onclick="quickAction('guide')">🔍 Guide</button>
+    <button class="qbtn"       onclick="quickAction('lore')">📖 Lore</button>
+    <button class="qbtn"       onclick="quickAction('build')">⚙️ Build</button>
+    <button class="qbtn"       onclick="quickAction('trophy')">🏆 Trophies</button>
+    <button class="qbtn"       onclick="quickAction('secrets')">🥚 Secrets</button>
+    <button class="qbtn"       onclick="quickAction('ending')">🏁 Best Ending</button>
+    <button class="qbtn"       onclick="quickAction('hard')">💀 Hard Mode</button>
+  </div>
+  <div class="pacing-bar">
+    <span class="pacing-lbl">PACING:</span>
+    <button class="pbtn on" id="pbStep" onclick="setPacing('step')">STEP-BY-STEP</button>
+    <button class="pbtn"    id="pbFull" onclick="setPacing('full')">FULL DUMP</button>
+  </div>
+  <div class="msgs" id="msgs">
+    <div class="boot-screen" id="bootScreen">
+      <div class="boot-icon">📡</div>
+      <div class="boot-title">// AWAITING MISSION BRIEF</div>
+      <div class="boot-sub">Add a game from the sidebar and select it.<br>Tell me where you're stuck — I'll only step in when you need it.</div>
+    </div>
+  </div>
+  <button class="scroll-btn" id="scrollBtn" onclick="scrollToBottom()">↓</button>
+  <div class="input-area">
+    <textarea class="chat-input" id="chatInput" placeholder="ENTER SITREP..." rows="1"
+      onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+  </div>
+</main>
+
+<!-- UTILITIES -->
+<aside class="utilities">
+  <div class="util-tabs">
+    <button class="utab on" onclick="switchTab('notes',this)">NOTES</button>
+    <button class="utab"    onclick="switchTab('reminders',this)">DON'T FORGET</button>
+  </div>
+  <div class="upanel on" id="panel-notes">
+    <div class="util-game-bar" id="notesGameBar">// SELECT A GAME</div>
+    <textarea class="notes-ta" id="notesTa" placeholder="Jot anything here — locations, passwords, NPC names, codes, key items..."></textarea>
+    <div class="notes-foot">
+      <span class="notes-chars" id="notesChars">0 chars</span>
+      <button class="save-btn" id="saveNotesBtn" onclick="saveNotes()">SAVE</button>
+    </div>
+  </div>
+  <div class="upanel" id="panel-reminders">
+    <div class="util-game-bar" id="remGameBar">// SELECT A GAME</div>
+    <div class="tasks-top">
+      <input class="task-in" id="taskIn" placeholder="Add reminder..." onkeydown="if(event.key==='Enter')addTask()">
+      <button class="task-add-btn" onclick="addTask()">+</button>
+    </div>
+    <div class="tasks-list" id="tasksList"></div>
+  </div>
+</aside>
+</div>
+
+<!-- ADD GAME MODAL -->
+<div class="modal-bg" id="addModal">
+  <div class="modal">
+    <div class="modal-title">// NEW OP</div>
+    <div class="fgroup">
+      <label class="flabel">GAME TITLE</label>
+      <input class="finput" id="gameNameIn" placeholder="e.g. Elden Ring" onkeydown="if(event.key==='Enter')addGame()">
+    </div>
+    <div class="fgroup">
+      <label class="flabel">PLATFORM</label>
+      <select class="fselect" id="gamePlatformIn">
+        <option value="PS5">PS5</option>
+        <option value="PS4">PS4</option>
+        <option value="PC">PC</option>
+        <option value="PS5 / PC">PS5 / PC</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="fgroup">
+      <label class="flabel">CURRENT SITUATION (optional)</label>
+      <input class="finput" id="gameSituationIn" placeholder="e.g. Act 2, stuck on Margit boss fight">
+    </div>
+    <div class="modal-btns">
+      <button class="mbtn mbtn-primary" onclick="addGame()">DEPLOY</button>
+      <button class="mbtn mbtn-ghost"   onclick="closeModal('addModal')">ABORT</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-bg" id="settingsModal">
+  <div class="modal">
+    <div class="modal-title">// CONFIG</div>
+    <div class="fgroup">
+      <label class="flabel">ANTHROPIC API KEY</label>
+      <input class="finput" id="apiKeyIn" type="password" placeholder="sk-ant-...">
+      <p class="fhint">Stored locally in your browser only — never sent anywhere else.<br>
+      Get a free key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+    </div>
+    <div class="modal-btns">
+      <button class="mbtn mbtn-primary" onclick="saveSettings()">SAVE CONFIG</button>
+      <button class="mbtn mbtn-ghost"   onclick="closeModal('settingsModal')">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =====================================================================
+// STATE
+// =====================================================================
+let games        = [];
+let activeGameId = null;
+let pacing       = 'step';
+let isLoading    = false;
+let histories    = {};
+
+// =====================================================================
+// INIT
+// =====================================================================
+function init() {
+  try { games     = JSON.parse(localStorage.getItem('cmp_games')     || '[]'); } catch(e){ games = []; }
+  try { histories = JSON.parse(localStorage.getItem('cmp_histories') || '{}'); } catch(e){ histories = {}; }
+  activeGameId = localStorage.getItem('cmp_activeGame') || null;
+  pacing       = localStorage.getItem('cmp_pacing') || 'step';
+  setPacing(pacing);
+  renderGames();
+  if (activeGameId && games.find(g => g.id === activeGameId)) {
+    selectGame(activeGameId, false);
+  }
+  checkApiKey();
+  tickClock();
+  setInterval(tickClock, 10000);
+  setInterval(autoSaveNotes, 10000);
+  document.getElementById('msgs').addEventListener('scroll', function() {
+    const nearBottom = this.scrollHeight - this.scrollTop - this.clientHeight < 80;
+    document.getElementById('scrollBtn').classList.toggle('show', !nearBottom);
+  });
+}
+
+// =====================================================================
+// CLOCK
+// =====================================================================
+function tickClock() {
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+
+// =====================================================================
+// API KEY
+// =====================================================================
+function getApiKey() { return localStorage.getItem('cmp_apikey') || ''; }
+function checkApiKey() {
+  document.getElementById('apiWarn').classList.toggle('show', !getApiKey());
+}
+
+// =====================================================================
+// GAMES
+// =====================================================================
+function saveGames()     { localStorage.setItem('cmp_games',     JSON.stringify(games));     }
+function saveHistories() { localStorage.setItem('cmp_histories', JSON.stringify(histories)); }
+
+function renderGames() {
+  const el = document.getElementById('gamesList');
+  if (!games.length) {
+    el.innerHTML = `<div class="no-games">
+      <div class="no-games-icon">🎮</div>
+      <div class="no-games-title">NO ACTIVE OPS</div>
+      <div class="no-games-sub">Hit + to track<br>a new game</div>
+    </div>`;
+    return;
+  }
+  el.innerHTML = games.map(g => `
+    <div class="game-card${g.id === activeGameId ? ' active' : ''}" onclick="selectGame('${g.id}',true)">
+      <div class="gc-name">${esc(g.name)}</div>
+      <div class="gc-meta"><span class="gc-platform">${esc(g.platform)}</span></div>
+      <button class="gc-del" onclick="deleteGame(event,'${g.id}')" title="Remove">✕</button>
+    </div>`).join('');
+}
+
+function selectGame(id, showGreeting) {
+  activeGameId = id;
+  localStorage.setItem('cmp_activeGame', id);
+  renderGames();
+  const g = games.find(x => x.id === id);
+  if (!g) return;
+  document.getElementById('activeTagName').textContent = g.name + ' · ' + g.platform;
+  document.getElementById('activeTag').classList.add('show');
+  renderHistory(id);
+  if (showGreeting && (!histories[id] || !histories[id].length)) sendGreeting(g);
+  loadNotes(id);
+  loadTasks(id);
+  updateUtilBars(g.name);
+}
+
+function updateUtilBars(name) {
+  const n = esc(name);
+  document.getElementById('notesGameBar').innerHTML = `// NOTES &nbsp;<span class="gname">${n}</span>`;
+  document.getElementById('remGameBar').innerHTML   = `// REMINDERS &nbsp;<span class="gname">${n}</span>`;
+}
+
+function renderHistory(id) {
+  const el = document.getElementById('msgs');
+  el.innerHTML = '';
+  (histories[id] || []).forEach(m => appendBubble(m.role, m.content, false));
+  if (!histories[id] || !histories[id].length) {
+    el.innerHTML = `<div class="boot-screen" id="bootScreen">
+      <div class="boot-icon">📡</div>
+      <div class="boot-title">// AWAITING MISSION BRIEF</div>
+      <div class="boot-sub">Tell me where you're stuck.<br>I'll only step in when you need it.</div>
+    </div>`;
+  }
+  scrollToBottom();
+}
+
+function openAddGame() {
+  document.getElementById('gameNameIn').value      = '';
+  document.getElementById('gameSituationIn').value = '';
+  document.getElementById('addModal').classList.add('show');
+  setTimeout(() => document.getElementById('gameNameIn').focus(), 60);
+}
+
+function addGame() {
+  const name = document.getElementById('gameNameIn').value.trim();
+  if (!name) { document.getElementById('gameNameIn').style.borderColor='var(--red)'; return; }
+  document.getElementById('gameNameIn').style.borderColor='';
+  const platform  = document.getElementById('gamePlatformIn').value;
+  const situation = document.getElementById('gameSituationIn').value.trim();
+  const id = 'g_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+  games.push({ id, name, platform, situation });
+  histories[id] = [];
+  saveGames(); saveHistories();
+  closeModal('addModal');
+  renderGames();
+  selectGame(id, true);
+}
+
+function deleteGame(e, id) {
+  e.stopPropagation();
+  if (!confirm('Remove this game? Chat history and notes will be deleted.')) return;
+  games = games.filter(g => g.id !== id);
+  delete histories[id];
+  localStorage.removeItem('cmp_notes_' + id);
+  localStorage.removeItem('cmp_tasks_' + id);
+  saveGames(); saveHistories();
+  if (activeGameId === id) {
+    activeGameId = games.length ? games[games.length - 1].id : null;
+    localStorage.setItem('cmp_activeGame', activeGameId || '');
+    document.getElementById('activeTag').classList.remove('show');
+    document.getElementById('msgs').innerHTML = `<div class="boot-screen">
+      <div class="boot-icon">📡</div>
+      <div class="boot-title">// AWAITING MISSION BRIEF</div>
+      <div class="boot-sub">Add a game from the sidebar and select it.<br>Tell me where you're stuck.</div>
+    </div>`;
+    document.getElementById('notesGameBar').textContent = '// SELECT A GAME';
+    document.getElementById('remGameBar').textContent   = '// SELECT A GAME';
+    document.getElementById('notesTa').value = '';
+    document.getElementById('tasksList').innerHTML = '';
+    if (activeGameId) selectGame(activeGameId, false);
+  }
+  renderGames();
+}
+
+// =====================================================================
+// SETTINGS
+// =====================================================================
+function openSettings() {
+  document.getElementById('apiKeyIn').value = getApiKey();
+  document.getElementById('settingsModal').classList.add('show');
+  setTimeout(() => document.getElementById('apiKeyIn').focus(), 60);
+}
+function saveSettings() {
+  const key = document.getElementById('apiKeyIn').value.trim();
+  if (key) localStorage.setItem('cmp_apikey', key);
+  else localStorage.removeItem('cmp_apikey');
+  closeModal('settingsModal');
+  checkApiKey();
+}
+
+// =====================================================================
+// PACING
+// =====================================================================
+function setPacing(mode) {
+  pacing = mode;
+  localStorage.setItem('cmp_pacing', mode);
+  document.getElementById('pbStep').classList.toggle('on', mode === 'step');
+  document.getElementById('pbFull').classList.toggle('on', mode === 'full');
+}
+
+// =====================================================================
+// QUICK ACTIONS
+// =====================================================================
+const QA = {
+  hint:    "Give me a nudge in the right direction — no spoilers, just enough to unblock me.",
+  spoil:   "Spoil it completely — give me the full answer, I don't care about spoilers at all.",
+  guide:   "Find me a walkthrough or guide for exactly where I'm at. Check Reddit, IGN, or PowerPyx.",
+  lore:    "Break down the lore and story for me. What's happening narratively and who are the key players?",
+  build:   "Optimize my build. I'm a veteran so give me something actually strong with specific stats/items.",
+  trophy:  "What trophies or achievements should I focus on right now? Any missables I need to watch for?",
+  secrets: "Any Easter eggs, secrets, or hidden items in this area or at this point in the game?",
+  ending:  "What's the best ending route? Which choices and decisions actually affect the outcome?",
+  hard:    "Hardest-difficulty tips for this section — what makes it brutal and how do I deal with it?"
+};
+function quickAction(key) {
+  if (!activeGameId) { alert('Select a game first!'); return; }
+  if (isLoading) return;
+  sendMessage(QA[key]);
+}
+
+// =====================================================================
+// CHAT
+// =====================================================================
+function buildSystem(game) {
+  return `You are COMPANION — a gaming assistant for a veteran player. You're friendly, casual, and direct, like a knowledgeable mate who happens to know everything about games. No condescension, no over-explaining basics.
+
+CURRENT GAME: ${game.name} (Platform: ${game.platform})${game.situation ? '\nCURRENT SITUATION: ' + game.situation : ''}
+
+PLAYER PROFILE:
+- Veteran skill level — skip the basics, get straight to what matters
+- Platforms: PlayStation (PS4/PS5) and PC
+- Needs help with: walkthroughs, puzzle solving, lore, and build optimization
+- Preferred sources: Reddit (game subreddits and r/gaming), IGN guides, PowerPyx (especially trophy guides)
+- Always interested in: trophy/achievement hunting, Easter eggs & secrets, best ending routes, hardest-mode specific tips
+
+SPOILER POLICY: If your response contains major plot spoilers or story reveals, you MUST start with this exact line on its own:
+⚠️ SPOILER WARNING
+Then continue with your response.
+
+PACING MODE: ${pacing === 'step'
+  ? 'STEP-BY-STEP — Give ONE step or piece of information at a time. End with something like "let me know when you\'re ready for the next part." Do NOT dump everything at once unless asked.'
+  : 'FULL DUMP — Give the complete, comprehensive answer all at once. Hold nothing back.'}
+
+BEHAVIOUR:
+- Use web search to find current, accurate, game-specific info whenever relevant
+- Prioritize Reddit community threads, IGN, and PowerPyx as sources
+- Format responses clearly — use headers (##) for sections, bullet points for steps
+- For builds, give specific item names, stats, and numbers
+- If unsure about something specific, say so rather than guessing
+- Keep responses tight and useful — the player is a veteran, respect their time`;
+}
+
+async function sendGreeting(game) {
+  if (!getApiKey()) return;
+  const greet = `Hey, just loaded up ${game.name} on ${game.platform}.${game.situation ? ' Currently: ' + game.situation + '.' : ''} Ready to help when I need it.`;
+  await callClaude(game, greet, true);
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+async function sendMessage(override) {
+  if (isLoading) return;
+  if (!activeGameId) { alert('Select a game first!'); return; }
+  if (!getApiKey())  { openSettings(); return; }
+  const input = document.getElementById('chatInput');
+  const text  = override || input.value.trim();
+  if (!text) return;
+  if (!override) { input.value = ''; autoResize(input); }
+  document.getElementById('bootScreen')?.remove();
+  const game = games.find(g => g.id === activeGameId);
+  if (!game) return;
+  await callClaude(game, text, false);
+}
+
+async function callClaude(game, userText, isGreeting) {
+  isLoading = true;
+  setLoadingUI(true);
+  if (!isGreeting) {
+    appendBubble('user', userText, true);
+    pushHistory(game.id, 'user', userText);
+  }
+  const typingEl = showTyping();
+  const mightSearch = /guide|walkthrough|where|how (do|to)|find|location|boss|trophy|achievement|build|loadout|tip|strategy|secret|easter egg/i.test(userText);
+  if (mightSearch) document.getElementById('searchPill').classList.add('show');
+
+  try {
+    // Build messages array from history
+    const messages = (histories[game.id] || []).map(m => ({ role: m.role, content: m.content }));
+    if (isGreeting) messages.push({ role: 'user', content: userText });
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': getApiKey(),
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2048,
+        system: buildSystem(game),
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages
+      })
+    });
+
+    if (!resp.ok) {
+      let msg = `API Error ${resp.status}`;
+      try { const d = await resp.json(); msg = d?.error?.message || msg; } catch(_){}
+      throw new Error(msg);
+    }
+
+    const data = await resp.json();
+    let aiText = extractText(data.content);
+
+    // If stopped for tool use, do a follow-up turn
+    if (data.stop_reason === 'tool_use') {
+      aiText = await doToolTurn(data.content, messages, buildSystem(game));
+    }
+
+    typingEl.remove();
+    document.getElementById('searchPill').classList.remove('show');
+
+    if (aiText && aiText.trim()) {
+      appendBubble('ai', aiText, true);
+      pushHistory(game.id, 'assistant', aiText);
+    }
+
+  } catch(err) {
+    typingEl.remove();
+    document.getElementById('searchPill').classList.remove('show');
+    appendBubble('ai', `**CONNECTION ERROR**\n\n${err.message}\n\nCheck your API key in settings (⚙) or try again.`, true);
+  }
+
+  isLoading = false;
+  setLoadingUI(false);
+  scrollToBottom();
+}
+
+function extractText(content) {
+  if (!content || !Array.isArray(content)) return '';
+  return content.filter(b => b.type === 'text').map(b => b.text).join('');
+}
+
+async function doToolTurn(assistantContent, prevMessages, systemPrompt) {
+  // Build tool results for any tool_use blocks
+  const toolResults = assistantContent
+    .filter(b => b.type === 'tool_use')
+    .map(b => ({ type: 'tool_result', tool_use_id: b.id, content: 'Web search completed.' }));
+
+  if (!toolResults.length) return extractText(assistantContent);
+
+  const nextMessages = [
+    ...prevMessages,
+    { role: 'assistant', content: assistantContent },
+    { role: 'user',      content: toolResults }
+  ];
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': getApiKey(),
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2048,
+        system: systemPrompt,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: nextMessages
+      })
+    });
+    if (!resp.ok) return '';
+    const d = await resp.json();
+    // Could recurse if another tool_use, but cap at one extra turn for safety
+    return extractText(d.content);
+  } catch(_) { return ''; }
+}
+
+function pushHistory(gameId, role, content) {
+  if (!histories[gameId]) histories[gameId] = [];
+  histories[gameId].push({ role, content });
+  // Keep last 50 exchanges to avoid token limits
+  if (histories[gameId].length > 50) histories[gameId] = histories[gameId].slice(-50);
+  saveHistories();
+}
+
+// =====================================================================
+// BUBBLES
+// =====================================================================
+function appendBubble(role, content, animate) {
+  const el = document.createElement('div');
+  if (role === 'user') {
+    el.className = 'msg user';
+    el.innerHTML = `<div class="msg-who">YOU</div><div class="msg-body">${esc(content).replace(/\n/g,'<br>')}</div>`;
+  } else {
+    el.className = 'msg ai';
+    const hasSpoiler = /⚠️ SPOILER WARNING/i.test(content);
+    let body = '';
+    if (hasSpoiler) {
+      const clean = content.replace(/⚠️ SPOILER WARNING[^\n]*/i, '').trim();
+      body = `<div class="spoiler-banner">⚠️ SPOILER WARNING — PROCEED WITH CAUTION</div>` + mdToHtml(clean);
+    } else {
+      body = mdToHtml(content);
+    }
+    el.innerHTML = `<div class="msg-who">COMPANION</div><div class="msg-body">${body}</div>`;
+  }
+  document.getElementById('msgs').appendChild(el);
+  scrollToBottom();
+}
+
+function mdToHtml(text) {
+  // Escape HTML first
+  let t = text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  // Code blocks (``` ... ```) — handle before inline code
+  t = t.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, code) =>
+    `<pre style="background:rgba(0,0,0,.4);padding:10px;margin:8px 0;overflow-x:auto;font-family:var(--font-mono);font-size:11px;color:var(--amber);border-left:2px solid var(--amber-dim)">${code.trim()}</pre>`);
+
+  // Headings
+  t = t.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  t = t.replace(/^## (.+)$/gm,  '<h2>$1</h2>');
+  t = t.replace(/^# (.+)$/gm,   '<h1>$1</h1>');
+
+  // Horizontal rule
+  t = t.replace(/^---+$/gm, '<hr>');
+
+  // Bold
+  t = t.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  // Italic (only * form, not _)
+  t = t.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  // Inline code
+  t = t.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  // Links
+  t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+  // Process line by line for lists and paragraphs
+  const lines = t.split('\n');
+  const out   = [];
+  let inUl = false, inOl = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const ulMatch = line.match(/^[\s]*[-*•]\s+(.+)/);
+    const olMatch = line.match(/^[\s]*\d+\.\s+(.+)/);
+
+    if (ulMatch) {
+      if (!inUl) { out.push('<ul>'); inUl = true; }
+      if (inOl)  { out.push('</ol>'); inOl = false; }
+      out.push(`<li>${ulMatch[1]}</li>`);
+    } else if (olMatch) {
+      if (!inOl) { out.push('<ol>'); inOl = true; }
+      if (inUl)  { out.push('</ul>'); inUl = false; }
+      out.push(`<li>${olMatch[1]}</li>`);
+    } else {
+      if (inUl) { out.push('</ul>'); inUl = false; }
+      if (inOl) { out.push('</ol>'); inOl = false; }
+      out.push(line);
+    }
+  }
+  if (inUl) out.push('</ul>');
+  if (inOl) out.push('</ol>');
+
+  // Wrap non-tag blocks in paragraphs
+  const blocks = out.join('\n').split(/\n{2,}/);
+  return blocks.map(block => {
+    block = block.trim();
+    if (!block) return '';
+    if (/^<(ul|ol|li|h[1-6]|pre|hr|div)/.test(block)) return block;
+    return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+  }).join('');
+}
+
+function showTyping() {
+  const el = document.createElement('div');
+  el.className = 'typing-msg msg ai';
+  el.innerHTML = `<div class="msg-who">COMPANION</div><div class="typing-dots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>`;
+  document.getElementById('msgs').appendChild(el);
+  scrollToBottom();
+  return el;
+}
+
+function setLoadingUI(on) {
+  document.getElementById('sendBtn').disabled = on;
+  document.querySelectorAll('.qbtn').forEach(b => b.disabled = on);
+}
+
+function scrollToBottom() {
+  const el = document.getElementById('msgs');
+  el.scrollTop = el.scrollHeight;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+// =====================================================================
+// NOTES
+// =====================================================================
+function loadNotes(id) {
+  document.getElementById('notesTa').value = localStorage.getItem('cmp_notes_' + id) || '';
+  updateNotesChars();
+}
+function saveNotes() {
+  if (!activeGameId) return;
+  localStorage.setItem('cmp_notes_' + activeGameId, document.getElementById('notesTa').value);
+  const btn = document.getElementById('saveNotesBtn');
+  btn.textContent = 'SAVED ✓'; btn.classList.add('saved');
+  setTimeout(() => { btn.textContent = 'SAVE'; btn.classList.remove('saved'); }, 1500);
+}
+function updateNotesChars() {
+  document.getElementById('notesChars').textContent = document.getElementById('notesTa').value.length + ' chars';
+}
+function autoSaveNotes() {
+  if (activeGameId) localStorage.setItem('cmp_notes_' + activeGameId, document.getElementById('notesTa').value);
+}
+document.getElementById('notesTa').addEventListener('input', updateNotesChars);
+
+// =====================================================================
+// TASKS
+// =====================================================================
+function getTasks(id)        { try { return JSON.parse(localStorage.getItem('cmp_tasks_' + id) || '[]'); } catch(e){ return []; } }
+function saveTasks(id, tasks){ localStorage.setItem('cmp_tasks_' + id, JSON.stringify(tasks)); }
+
+function loadTasks(id) { renderTasks(getTasks(id)); }
+
+function renderTasks(tasks) {
+  const el = document.getElementById('tasksList');
+  if (!tasks.length) { el.innerHTML = '<div class="tasks-empty">NO REMINDERS YET</div>'; return; }
+  el.innerHTML = tasks.map((t, i) => `
+    <div class="task-item">
+      <div class="task-chk${t.done ? ' done' : ''}" onclick="toggleTask(${i})">${t.done ? '✓' : ''}</div>
+      <div class="task-text${t.done ? ' done' : ''}">${esc(t.text)}</div>
+      <button class="task-del" onclick="deleteTask(${i})">✕</button>
+    </div>`).join('');
+}
+
+function addTask() {
+  if (!activeGameId) return;
+  const inp = document.getElementById('taskIn');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  const tasks = getTasks(activeGameId);
+  tasks.push({ text: txt, done: false });
+  saveTasks(activeGameId, tasks);
+  renderTasks(tasks);
+  inp.value = '';
+}
+function toggleTask(i) {
+  if (!activeGameId) return;
+  const tasks = getTasks(activeGameId); tasks[i].done = !tasks[i].done;
+  saveTasks(activeGameId, tasks); renderTasks(tasks);
+}
+function deleteTask(i) {
+  if (!activeGameId) return;
+  const tasks = getTasks(activeGameId); tasks.splice(i, 1);
+  saveTasks(activeGameId, tasks); renderTasks(tasks);
+}
+
+// =====================================================================
+// TABS & MODALS
+// =====================================================================
+function switchTab(name, btn) {
+  document.querySelectorAll('.utab').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.upanel').forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('panel-' + name).classList.add('on');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+document.querySelectorAll('.modal-bg').forEach(bg =>
+  bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('show'); }));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-bg.show').forEach(m => m.classList.remove('show'));
+});
+
+// =====================================================================
+// UTILS
+// =====================================================================
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+// =====================================================================
+// GO
+// =====================================================================
+init();
+</script>
+</body>
+</html>
