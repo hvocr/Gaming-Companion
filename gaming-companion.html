@@ -12,7 +12,7 @@
   --border:#152815; --border-hi:#1f4a1f;
   --green:#33e85a; --green-dim:#1a6b2e; --green-glow:rgba(51,232,90,0.07); --green-glow2:rgba(51,232,90,0.16);
   --amber:#e8a020; --amber-dim:#7a5010; --amber-glow:rgba(232,160,32,0.07); --amber-glow2:rgba(232,160,32,0.18);
-  --red:#e84040;
+  --red:#e84040; --red-glow:rgba(232,64,64,0.12);
   --text:#7dc98a; --text-hi:#c5edcc; --text-lo:#2e5c38;
   --font-hud:'Orbitron',sans-serif; --font-mono:'Share Tech Mono',monospace; --font-body:'Exo 2',sans-serif;
 }
@@ -25,31 +25,21 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:linear-gradient(rgba(51,232,90,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(51,232,90,.018) 1px,transparent 1px);
   background-size:52px 52px;}
 .app{position:relative;z-index:1;display:grid;grid-template-rows:48px 1fr;grid-template-columns:220px 1fr 268px;height:100vh;overflow:hidden;}
-
-/* ── HEADER ── */
-header{grid-column:1/-1;display:flex;align-items:center;gap:18px;padding:0 16px;
-  background:var(--surface);border-bottom:1px solid var(--border-hi);position:relative;overflow:hidden;}
-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--green) 25%,var(--green) 75%,transparent);opacity:.35;}
+header{grid-column:1/-1;display:flex;align-items:center;gap:18px;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border-hi);position:relative;overflow:hidden;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green) 25%,var(--green) 75%,transparent);opacity:.35;}
 .logo{font-family:var(--font-hud);font-size:12px;font-weight:700;letter-spacing:5px;color:var(--green);white-space:nowrap;flex-shrink:0;}
 .logo-sep{color:var(--amber);}
 .header-mid{flex:1;display:flex;align-items:center;gap:10px;overflow:hidden;}
-.active-tag{display:none;align-items:center;gap:7px;padding:2px 13px 2px 9px;
-  border:1px solid var(--border-hi);background:var(--green-glow);
-  font-family:var(--font-mono);font-size:10px;color:var(--green);letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;}
+.active-tag{display:none;align-items:center;gap:7px;padding:2px 13px 2px 9px;border:1px solid var(--border-hi);background:var(--green-glow);font-family:var(--font-mono);font-size:10px;color:var(--green);letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;}
 .active-tag.show{display:flex;}
 .tag-arr{color:var(--amber);font-size:7px;}
-.searching-pill{display:none;align-items:center;gap:6px;padding:2px 10px;
-  border:1px solid var(--amber-dim);background:var(--amber-glow);
-  font-family:var(--font-mono);font-size:9px;color:var(--amber);letter-spacing:2px;animation:pulseA 1s ease-in-out infinite;}
+.searching-pill{display:none;align-items:center;gap:6px;padding:2px 10px;border:1px solid var(--amber-dim);background:var(--amber-glow);font-family:var(--font-mono);font-size:9px;color:var(--amber);letter-spacing:2px;animation:pulse-amber 1s ease-in-out infinite;}
 .searching-pill.show{display:flex;}
-@keyframes pulseA{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes pulse-amber{0%,100%{opacity:1}50%{opacity:.5}}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:16px;font-family:var(--font-mono);font-size:10px;color:var(--text-lo);flex-shrink:0;}
 .status-dot{display:flex;align-items:center;gap:5px;color:var(--green);}
 .dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:blink 2.5s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.22}}
-
-/* ── SIDEBAR ── */
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 .sidebar{border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden;}
 .sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .sidebar-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--text-lo);}
@@ -73,15 +63,15 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .gc-del{position:absolute;right:7px;top:50%;transform:translateY(-50%);background:none;border:none;color:transparent;cursor:pointer;font-size:11px;padding:2px 4px;transition:all .15s;}
 .game-card:hover .gc-del{color:var(--text-lo);}
 .gc-del:hover{color:var(--red)!important;}
-
-/* ── CHAT ── */
 .chat-area{display:flex;flex-direction:column;background:var(--bg);overflow:hidden;position:relative;}
+.err-bar{display:none;align-items:center;gap:10px;padding:6px 14px;border-bottom:1px solid rgba(232,64,64,.3);background:var(--red-glow);font-family:var(--font-mono);font-size:10px;color:var(--red);flex-shrink:0;}
+.err-bar.show{display:flex;}
 .quick-strip{padding:7px 13px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;gap:4px;overflow-x:auto;flex-shrink:0;}
 .quick-strip::-webkit-scrollbar{height:2px;}
 .quick-strip::-webkit-scrollbar-thumb{background:var(--border-hi);}
 .qbtn{padding:3px 11px;font-family:var(--font-mono);font-size:10px;letter-spacing:.5px;border:1px solid var(--border-hi);background:transparent;color:var(--text-lo);cursor:pointer;transition:all .14s;white-space:nowrap;flex-shrink:0;}
 .qbtn:hover{border-color:var(--green);color:var(--green);background:var(--green-glow);}
-.qbtn.amb:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-glow);}
+.qbtn.amber:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-glow);}
 .qbtn:disabled{opacity:.3;cursor:not-allowed;}
 .pacing-bar{display:flex;align-items:center;gap:7px;padding:5px 13px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;}
 .pacing-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);}
@@ -133,8 +123,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .scroll-btn{position:absolute;bottom:65px;right:14px;width:28px;height:28px;border:1px solid var(--border-hi);background:var(--surface);color:var(--text-lo);cursor:pointer;font-size:14px;display:none;align-items:center;justify-content:center;transition:all .15s;z-index:10;}
 .scroll-btn.show{display:flex;}
 .scroll-btn:hover{border-color:var(--green);color:var(--green);}
-
-/* ── UTILITIES ── */
 .utilities{border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden;}
 .util-tabs{display:flex;border-bottom:1px solid var(--border-hi);flex-shrink:0;}
 .utab{flex:1;padding:10px 6px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text-lo);cursor:pointer;transition:all .16s;}
@@ -142,7 +130,7 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .utab:hover:not(.on){color:var(--text);}
 .upanel{display:none;flex-direction:column;flex:1;overflow:hidden;}
 .upanel.on{display:flex;}
-.util-game-bar{padding:6px 12px;border-bottom:1px solid var(--border);flex-shrink:0;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.util-game-bar{padding:6px 12px;border-bottom:1px solid var(--border);flex-shrink:0;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;}
 .util-game-bar .gname{color:var(--green);overflow:hidden;text-overflow:ellipsis;}
 .notes-ta{flex:1;background:transparent;border:none;color:var(--text-hi);padding:12px 13px;font-family:var(--font-mono);font-size:11px;line-height:1.85;resize:none;outline:none;}
 .notes-ta::placeholder{color:var(--text-lo);}
@@ -168,8 +156,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .task-del{background:none;border:none;color:transparent;cursor:pointer;font-size:10px;padding:0 3px;transition:all .14s;flex-shrink:0;}
 .task-item:hover .task-del{color:var(--text-lo);}
 .task-del:hover{color:var(--red)!important;}
-
-/* ── MODALS ── */
 .modal-bg{display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.82);align-items:center;justify-content:center;}
 .modal-bg.show{display:flex;animation:fadeUp .15s ease;}
 .modal{background:var(--panel-hi);border:1px solid var(--border-hi);width:390px;padding:26px;position:relative;}
@@ -191,21 +177,17 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 </head>
 <body>
 <div class="app">
-
-<!-- HEADER -->
 <header>
   <div class="logo">COMPANION<span class="logo-sep">::</span>OPS</div>
   <div class="header-mid">
-    <div class="active-tag" id="activeTag"><span class="tag-arr">▶</span><span id="activeTagName"></span></div>
-    <div class="searching-pill" id="searchPill">⟳ SEARCHING GUIDES...</div>
+    <div class="active-tag" id="activeTag"><span class="tag-arr">&#9658;</span><span id="activeTagName"></span></div>
+    <div class="searching-pill" id="searchPill">&#x27F3; SEARCHING GUIDES...</div>
   </div>
   <div class="header-right">
     <div class="status-dot"><div class="dot"></div> ONLINE</div>
     <span id="clock">--:--</span>
   </div>
 </header>
-
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-head">
     <span class="sidebar-lbl">// ACTIVE OPS</span>
@@ -213,19 +195,18 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   </div>
   <div class="games-list" id="gamesList"></div>
 </aside>
-
-<!-- CHAT -->
 <main class="chat-area">
+  <div class="err-bar" id="errBar"></div>
   <div class="quick-strip">
-    <button class="qbtn"     onclick="quickAction('hint')">💡 Hint</button>
-    <button class="qbtn amb" onclick="quickAction('spoil')">⚠️ Spoil It</button>
-    <button class="qbtn"     onclick="quickAction('guide')">🔍 Guide</button>
-    <button class="qbtn"     onclick="quickAction('lore')">📖 Lore</button>
-    <button class="qbtn"     onclick="quickAction('build')">⚙️ Build</button>
-    <button class="qbtn"     onclick="quickAction('trophy')">🏆 Trophies</button>
-    <button class="qbtn"     onclick="quickAction('secrets')">🥚 Secrets</button>
-    <button class="qbtn"     onclick="quickAction('ending')">🏁 Best Ending</button>
-    <button class="qbtn"     onclick="quickAction('hard')">💀 Hard Mode</button>
+    <button class="qbtn"       onclick="quickAction('hint')">&#128161; Hint</button>
+    <button class="qbtn amber" onclick="quickAction('spoil')">&#9888;&#65039; Spoil It</button>
+    <button class="qbtn"       onclick="quickAction('guide')">&#128269; Guide</button>
+    <button class="qbtn"       onclick="quickAction('lore')">&#128218; Lore</button>
+    <button class="qbtn"       onclick="quickAction('build')">&#9881;&#65039; Build</button>
+    <button class="qbtn"       onclick="quickAction('trophy')">&#127942; Trophies</button>
+    <button class="qbtn"       onclick="quickAction('secrets')">&#129370; Secrets</button>
+    <button class="qbtn"       onclick="quickAction('ending')">&#127937; Best Ending</button>
+    <button class="qbtn"       onclick="quickAction('hard')">&#128128; Hard Mode</button>
   </div>
   <div class="pacing-bar">
     <span class="pacing-lbl">PACING:</span>
@@ -234,20 +215,18 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   </div>
   <div class="msgs" id="msgs">
     <div class="boot-screen" id="bootScreen">
-      <div class="boot-icon">📡</div>
+      <div class="boot-icon">&#128225;</div>
       <div class="boot-title">// AWAITING MISSION BRIEF</div>
-      <div class="boot-sub">Add a game from the sidebar and select it.<br>Tell me where you're stuck — I'll only step in when you need it.</div>
+      <div class="boot-sub">Hit <strong>+</strong> to add a game, select it, then tell me where you're stuck.<br>I'll only step in when you need it.</div>
     </div>
   </div>
-  <button class="scroll-btn" id="scrollBtn" onclick="scrollToBottom()">↓</button>
+  <button class="scroll-btn" id="scrollBtn" onclick="scrollToBottom()">&#8595;</button>
   <div class="input-area">
     <textarea class="chat-input" id="chatInput" placeholder="ENTER SITREP..." rows="1"
       onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-    <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">&#10148;</button>
   </div>
 </main>
-
-<!-- UTILITIES -->
 <aside class="utilities">
   <div class="util-tabs">
     <button class="utab on" onclick="switchTab('notes',this)">NOTES</button>
@@ -272,7 +251,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 </aside>
 </div>
 
-<!-- ADD GAME MODAL -->
 <div class="modal-bg" id="addModal">
   <div class="modal">
     <div class="modal-title">// NEW OP</div>
@@ -302,514 +280,355 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 </div>
 
 <script>
-// ─────────────────────────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────────────────────────
-let games        = [];
-let activeGameId = null;
-let pacing       = 'step';
-let isLoading    = false;
-let histories    = {};   // { gameId: [{role, content}] }
+var games=[], activeGameId=null, pacing='step', isLoading=false, histories={};
 
-// ─────────────────────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────────────────────
-function init() {
-  try { games     = JSON.parse(localStorage.getItem('cmp_games')     || '[]'); } catch(e){ games=[]; }
-  try { histories = JSON.parse(localStorage.getItem('cmp_histories') || '{}'); } catch(e){ histories={}; }
-  activeGameId = localStorage.getItem('cmp_activeGame') || null;
-  pacing       = localStorage.getItem('cmp_pacing') || 'step';
-  setPacing(pacing);
-  renderGames();
-  if (activeGameId && games.find(g => g.id === activeGameId)) selectGame(activeGameId, false);
-  tickClock();
-  setInterval(tickClock, 10000);
-  setInterval(() => { if(activeGameId) localStorage.setItem('cmp_notes_'+activeGameId, document.getElementById('notesTa').value); }, 10000);
-  document.getElementById('msgs').addEventListener('scroll', function() {
-    const near = this.scrollHeight - this.scrollTop - this.clientHeight < 80;
-    document.getElementById('scrollBtn').classList.toggle('show', !near);
+function init(){
+  try{games=JSON.parse(localStorage.getItem('cmp_games')||'[]');}catch(e){games=[];}
+  try{histories=JSON.parse(localStorage.getItem('cmp_histories')||'{}');}catch(e){histories={};}
+  activeGameId=localStorage.getItem('cmp_activeGame')||null;
+  pacing=localStorage.getItem('cmp_pacing')||'step';
+  setPacing(pacing); renderGames();
+  if(activeGameId&&games.find(function(g){return g.id===activeGameId;})) selectGame(activeGameId,false);
+  tickClock(); setInterval(tickClock,10000);
+  setInterval(function(){if(activeGameId)localStorage.setItem('cmp_notes_'+activeGameId,document.getElementById('notesTa').value);},10000);
+  document.getElementById('msgs').addEventListener('scroll',function(){
+    document.getElementById('scrollBtn').classList.toggle('show',this.scrollHeight-this.scrollTop-this.clientHeight>80);
   });
 }
 
-// ─────────────────────────────────────────────────────────────
-// CLOCK
-// ─────────────────────────────────────────────────────────────
-function tickClock() {
-  const d = new Date();
-  document.getElementById('clock').textContent =
-    String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+function tickClock(){
+  var d=new Date();
+  document.getElementById('clock').textContent=pad(d.getHours())+':'+pad(d.getMinutes());
 }
+function pad(n){return String(n).padStart(2,'0');}
 
-// ─────────────────────────────────────────────────────────────
-// GAMES
-// ─────────────────────────────────────────────────────────────
-function saveGames()     { localStorage.setItem('cmp_games',     JSON.stringify(games));     }
-function saveHistories() { localStorage.setItem('cmp_histories', JSON.stringify(histories)); }
+function saveGames(){localStorage.setItem('cmp_games',JSON.stringify(games));}
+function saveHistories(){localStorage.setItem('cmp_histories',JSON.stringify(histories));}
 
-function renderGames() {
-  const el = document.getElementById('gamesList');
-  if (!games.length) {
-    el.innerHTML = `<div class="no-games"><div class="no-games-icon">🎮</div>
-      <div class="no-games-title">NO ACTIVE OPS</div>
-      <div class="no-games-sub">Hit + to track<br>a new game</div></div>`;
+function renderGames(){
+  var el=document.getElementById('gamesList');
+  if(!games.length){
+    el.innerHTML='<div class="no-games"><div class="no-games-icon">&#127918;</div><div class="no-games-title">NO ACTIVE OPS</div><div class="no-games-sub">Hit + to start<br>tracking a game</div></div>';
     return;
   }
-  el.innerHTML = games.map(g => `
-    <div class="game-card${g.id===activeGameId?' active':''}" onclick="selectGame('${g.id}',true)">
-      <div class="gc-name">${esc(g.name)}</div>
-      <div class="gc-meta"><span class="gc-platform">${esc(g.platform)}</span></div>
-      <button class="gc-del" onclick="deleteGame(event,'${g.id}')" title="Remove">✕</button>
-    </div>`).join('');
-}
-
-function selectGame(id, showGreeting) {
-  activeGameId = id;
-  localStorage.setItem('cmp_activeGame', id);
-  renderGames();
-  const g = games.find(x => x.id === id);
-  if (!g) return;
-  document.getElementById('activeTagName').textContent = g.name + ' · ' + g.platform;
-  document.getElementById('activeTag').classList.add('show');
-  renderHistory(id);
-  if (showGreeting && (!histories[id] || !histories[id].length)) sendGreeting(g);
-  loadNotes(id);
-  loadTasks(id);
-  document.getElementById('notesGameBar').innerHTML = `// NOTES &nbsp;<span class="gname">${esc(g.name)}</span>`;
-  document.getElementById('remGameBar').innerHTML   = `// REMINDERS &nbsp;<span class="gname">${esc(g.name)}</span>`;
-}
-
-function renderHistory(id) {
-  const el = document.getElementById('msgs');
-  el.innerHTML = '';
-  const hist = histories[id] || [];
-  if (!hist.length) {
-    el.innerHTML = `<div class="boot-screen" id="bootScreen">
-      <div class="boot-icon">📡</div>
-      <div class="boot-title">// AWAITING MISSION BRIEF</div>
-      <div class="boot-sub">Tell me where you're stuck.<br>I'll only step in when you need it.</div></div>`;
-  } else {
-    hist.forEach(m => appendBubble(m.role, m.content, false));
-  }
-  scrollToBottom();
-}
-
-function openAddGame() {
-  document.getElementById('gameNameIn').value      = '';
-  document.getElementById('gameSituationIn').value = '';
-  document.getElementById('addModal').classList.add('show');
-  setTimeout(() => document.getElementById('gameNameIn').focus(), 60);
-}
-
-function addGame() {
-  const name = document.getElementById('gameNameIn').value.trim();
-  if (!name) { document.getElementById('gameNameIn').style.borderColor='var(--red)'; return; }
-  document.getElementById('gameNameIn').style.borderColor = '';
-  const platform  = document.getElementById('gamePlatformIn').value;
-  const situation = document.getElementById('gameSituationIn').value.trim();
-  const id = 'g_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
-  games.push({ id, name, platform, situation });
-  histories[id] = [];
-  saveGames(); saveHistories();
-  closeModal('addModal');
-  renderGames();
-  selectGame(id, true);
-}
-
-function deleteGame(e, id) {
-  e.stopPropagation();
-  if (!confirm('Remove this game and all its data?')) return;
-  games = games.filter(g => g.id !== id);
-  delete histories[id];
-  localStorage.removeItem('cmp_notes_' + id);
-  localStorage.removeItem('cmp_tasks_' + id);
-  saveGames(); saveHistories();
-  if (activeGameId === id) {
-    activeGameId = games.length ? games[games.length-1].id : null;
-    localStorage.setItem('cmp_activeGame', activeGameId || '');
-    document.getElementById('activeTag').classList.remove('show');
-    document.getElementById('msgs').innerHTML = `<div class="boot-screen">
-      <div class="boot-icon">📡</div><div class="boot-title">// AWAITING MISSION BRIEF</div>
-      <div class="boot-sub">Add a game from the sidebar and select it.</div></div>`;
-    document.getElementById('notesGameBar').textContent = '// SELECT A GAME';
-    document.getElementById('remGameBar').textContent   = '// SELECT A GAME';
-    document.getElementById('notesTa').value = '';
-    document.getElementById('tasksList').innerHTML = '';
-    if (activeGameId) selectGame(activeGameId, false);
-  }
-  renderGames();
-}
-
-// ─────────────────────────────────────────────────────────────
-// PACING
-// ─────────────────────────────────────────────────────────────
-function setPacing(mode) {
-  pacing = mode;
-  localStorage.setItem('cmp_pacing', mode);
-  document.getElementById('pbStep').classList.toggle('on', mode==='step');
-  document.getElementById('pbFull').classList.toggle('on', mode==='full');
-}
-
-// ─────────────────────────────────────────────────────────────
-// QUICK ACTIONS
-// ─────────────────────────────────────────────────────────────
-const QA = {
-  hint:    "Give me a nudge in the right direction — no spoilers, just enough to unblock me.",
-  spoil:   "Spoil it completely — full answer, I don't care about spoilers at all.",
-  guide:   "Find me a walkthrough or guide for exactly where I'm at. Check Reddit, IGN, or PowerPyx.",
-  lore:    "Break down the lore and story for me. What's happening and who are the key players?",
-  build:   "Optimize my build. I'm a veteran so give me something actually strong with specific stats/items.",
-  trophy:  "What trophies or achievements should I focus on right now? Any missables I need to watch for?",
-  secrets: "Any Easter eggs, secrets, or hidden items in this area or at this point in the game?",
-  ending:  "What's the best ending route? Which choices and decisions actually affect the outcome?",
-  hard:    "Hardest-difficulty tips for this section — what makes it brutal and how do I deal with it?"
-};
-function quickAction(key) {
-  if (!activeGameId) { alert('Select a game first!'); return; }
-  if (isLoading) return;
-  sendMessage(QA[key]);
-}
-
-// ─────────────────────────────────────────────────────────────
-// SYSTEM PROMPT BUILDER
-// ─────────────────────────────────────────────────────────────
-function buildSystem(game) {
-  return `You are COMPANION — a gaming assistant for a veteran player. You're friendly, casual, and direct — like a knowledgeable mate who happens to know everything about games. No condescension, no over-explaining basics.
-
-CURRENT GAME: ${game.name} (Platform: ${game.platform})${game.situation ? '\nCURRENT SITUATION: ' + game.situation : ''}
-
-PLAYER PROFILE:
-- Veteran skill level — skip the basics, get straight to what matters
-- Platforms: PlayStation (PS4/PS5) and PC
-- Needs: walkthroughs, puzzle solving, lore, build optimization
-- Preferred sources: Reddit (game-specific subreddits + r/gaming), IGN guides, PowerPyx (especially for trophy guides)
-- Always interested in: trophy/achievement hunting, Easter eggs & secrets, best ending routes, hardest-mode specific tips
-
-SPOILER POLICY: If your response contains major plot spoilers or story reveals, you MUST start your response with exactly this on its own line:
-⚠️ SPOILER WARNING
-Then continue with your response on the next line.
-
-PACING MODE: ${pacing === 'step'
-  ? "STEP-BY-STEP — Give ONE step or piece of information at a time. End your response with something like 'ready for the next part?' Do NOT dump everything at once."
-  : "FULL DUMP — Give the complete, comprehensive answer all at once. Be thorough and hold nothing back."}
-
-BEHAVIOUR:
-- Use web search to find current, accurate, game-specific info whenever relevant
-- Prioritize Reddit community threads, IGN, and PowerPyx as sources
-- Use headers (##) for sections, bullet points for steps
-- For builds, give specific item names, stat numbers, skill names
-- If unsure about something specific, say so rather than guessing
-- Keep it tight and useful — the player is a veteran, respect their time`;
-}
-
-// ─────────────────────────────────────────────────────────────
-// CHAT ENGINE
-// ─────────────────────────────────────────────────────────────
-async function sendGreeting(game) {
-  const msg = `Hey, just loaded up ${game.name} on ${game.platform}.${game.situation ? ' I\'m currently: ' + game.situation + '.' : ''} Brief me on anything critical I should know right now, then stand by.`;
-  await callClaude(game, msg, true);
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
-async function sendMessage(override) {
-  if (isLoading) return;
-  if (!activeGameId) { alert('Select a game first!'); return; }
-  const input = document.getElementById('chatInput');
-  const text  = override || input.value.trim();
-  if (!text) return;
-  if (!override) { input.value = ''; autoResize(input); }
-  document.getElementById('bootScreen')?.remove();
-  const game = games.find(g => g.id === activeGameId);
-  if (!game) return;
-  await callClaude(game, text, false);
-}
-
-async function callClaude(game, userText, isGreeting) {
-  isLoading = true;
-  setUI(true);
-
-  if (!isGreeting) {
-    appendBubble('user', userText, true);
-    pushHistory(game.id, 'user', userText);
-  }
-
-  const typingEl = showTyping();
-  const mightSearch = /guide|walkthrough|where|how (do|to)|find|location|boss|trophy|achievement|build|loadout|tip|strategy|secret|easter egg/i.test(userText);
-  if (mightSearch) document.getElementById('searchPill').classList.add('show');
-
-  // Build the messages array
-  const messages = (histories[game.id] || []).map(m => ({ role: m.role, content: m.content }));
-  if (isGreeting) messages.push({ role: 'user', content: userText });
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2048,
-        system: buildSystem(game),
-        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-        messages
-      })
-    });
-
-    if (!resp.ok) {
-      let msg = `API Error ${resp.status}`;
-      try { const d = await resp.json(); msg = d?.error?.message || msg; } catch(_) {}
-      throw new Error(msg);
-    }
-
-    const data = await resp.json();
-    let aiText = extractText(data.content);
-
-    // Handle tool use turn
-    if (data.stop_reason === 'tool_use') {
-      aiText = await doToolTurn(data.content, messages, buildSystem(game));
-    }
-
-    typingEl.remove();
-    document.getElementById('searchPill').classList.remove('show');
-
-    if (aiText && aiText.trim()) {
-      appendBubble('ai', aiText, true);
-      pushHistory(game.id, 'assistant', aiText);
-    }
-
-  } catch(err) {
-    typingEl.remove();
-    document.getElementById('searchPill').classList.remove('show');
-    appendBubble('ai', `**CONNECTION ERROR**\n\n${err.message}\n\nPlease try again.`, true);
-  }
-
-  isLoading = false;
-  setUI(false);
-  scrollToBottom();
-}
-
-function extractText(content) {
-  if (!content || !Array.isArray(content)) return '';
-  return content.filter(b => b.type === 'text').map(b => b.text).join('');
-}
-
-async function doToolTurn(assistantContent, prevMessages, systemPrompt) {
-  const toolResults = assistantContent
-    .filter(b => b.type === 'tool_use')
-    .map(b => ({ type: 'tool_result', tool_use_id: b.id, content: 'Search completed.' }));
-  if (!toolResults.length) return extractText(assistantContent);
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2048,
-        system: systemPrompt,
-        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-        messages: [
-          ...prevMessages,
-          { role: 'assistant', content: assistantContent },
-          { role: 'user', content: toolResults }
-        ]
-      })
-    });
-    if (!resp.ok) return '';
-    const d = await resp.json();
-    return extractText(d.content);
-  } catch(_) { return ''; }
-}
-
-function pushHistory(gameId, role, content) {
-  if (!histories[gameId]) histories[gameId] = [];
-  histories[gameId].push({ role, content });
-  if (histories[gameId].length > 50) histories[gameId] = histories[gameId].slice(-50);
-  saveHistories();
-}
-
-// ─────────────────────────────────────────────────────────────
-// RENDERING
-// ─────────────────────────────────────────────────────────────
-function appendBubble(role, content, animate) {
-  const el = document.createElement('div');
-  if (role === 'user') {
-    el.className = 'msg user';
-    el.innerHTML = `<div class="msg-who">YOU</div><div class="msg-body">${esc(content).replace(/\n/g,'<br>')}</div>`;
-  } else {
-    el.className = 'msg ai';
-    const hasSpoiler = /⚠️ SPOILER WARNING/i.test(content);
-    let body = '';
-    if (hasSpoiler) {
-      const clean = content.replace(/⚠️ SPOILER WARNING[^\n]*/i, '').trim();
-      body = `<div class="spoiler-banner">⚠️ SPOILER WARNING — PROCEED WITH CAUTION</div>` + md(clean);
-    } else {
-      body = md(content);
-    }
-    el.innerHTML = `<div class="msg-who">COMPANION</div><div class="msg-body">${body}</div>`;
-  }
-  document.getElementById('msgs').appendChild(el);
-  scrollToBottom();
-}
-
-function md(text) {
-  let t = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  // Fenced code blocks
-  t = t.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, c) =>
-    `<pre>${c.trim()}</pre>`);
-  // Headings
-  t = t.replace(/^### (.+)$/gm,'<h3>$1</h3>');
-  t = t.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  t = t.replace(/^# (.+)$/gm,  '<h1>$1</h1>');
-  // HR
-  t = t.replace(/^---+$/gm,'<hr>');
-  // Bold, italic, inline code, links
-  t = t.replace(/\*\*([^*\n]+)\*\*/g,   '<strong>$1</strong>');
-  t = t.replace(/\*([^*\n]+)\*/g,        '<em>$1</em>');
-  t = t.replace(/`([^`\n]+)`/g,          '<code>$1</code>');
-  t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
-  // Lists
-  const lines = t.split('\n');
-  const out = [];
-  let inUl = false, inOl = false;
-  for (const line of lines) {
-    const ul = line.match(/^[ \t]*[-*•]\s+(.+)/);
-    const ol = line.match(/^[ \t]*\d+\.\s+(.+)/);
-    if (ul) {
-      if (!inUl) { if (inOl) { out.push('</ol>'); inOl=false; } out.push('<ul>'); inUl=true; }
-      out.push(`<li>${ul[1]}</li>`);
-    } else if (ol) {
-      if (!inOl) { if (inUl) { out.push('</ul>'); inUl=false; } out.push('<ol>'); inOl=true; }
-      out.push(`<li>${ol[1]}</li>`);
-    } else {
-      if (inUl) { out.push('</ul>'); inUl=false; }
-      if (inOl) { out.push('</ol>'); inOl=false; }
-      out.push(line);
-    }
-  }
-  if (inUl) out.push('</ul>');
-  if (inOl) out.push('</ol>');
-  // Paragraphs
-  return out.join('\n').split(/\n{2,}/).map(block => {
-    block = block.trim();
-    if (!block) return '';
-    if (/^<(ul|ol|h[1-6]|pre|hr|div)/.test(block)) return block;
-    return '<p>' + block.replace(/\n/g,'<br>') + '</p>';
+  el.innerHTML=games.map(function(g){
+    return '<div class="game-card'+(g.id===activeGameId?' active':'')+'" onclick="selectGame(\''+g.id+'\',true)">'+
+      '<div class="gc-name">'+esc(g.name)+'</div>'+
+      '<div class="gc-meta"><span class="gc-platform">'+esc(g.platform)+'</span></div>'+
+      '<button class="gc-del" onclick="deleteGame(event,\''+g.id+'\')">&#10005;</button>'+
+      '</div>';
   }).join('');
 }
 
-function showTyping() {
-  const el = document.createElement('div');
-  el.className = 'typing-msg msg ai';
-  el.innerHTML = `<div class="msg-who">COMPANION</div><div class="typing-dots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>`;
+function selectGame(id,greet){
+  activeGameId=id; localStorage.setItem('cmp_activeGame',id); renderGames();
+  var g=games.find(function(x){return x.id===id;}); if(!g) return;
+  document.getElementById('activeTagName').textContent=g.name+' \u00b7 '+g.platform;
+  document.getElementById('activeTag').classList.add('show');
+  renderHistory(id);
+  if(greet&&(!histories[id]||!histories[id].length)) sendGreeting(g);
+  loadNotes(id); loadTasks(id); updateUtilBars(g.name);
+}
+
+function updateUtilBars(name){
+  var n=esc(name);
+  document.getElementById('notesGameBar').innerHTML='// NOTES &nbsp;<span class="gname">'+n+'</span>';
+  document.getElementById('remGameBar').innerHTML='// REMINDERS &nbsp;<span class="gname">'+n+'</span>';
+}
+
+function renderHistory(id){
+  var el=document.getElementById('msgs'); el.innerHTML='';
+  var hist=histories[id]||[];
+  if(!hist.length){
+    el.innerHTML='<div class="boot-screen" id="bootScreen"><div class="boot-icon">&#128225;</div><div class="boot-title">// AWAITING MISSION BRIEF</div><div class="boot-sub">Tell me where you\'re stuck.<br>I\'ll only step in when you actually need it.</div></div>';
+  } else {
+    hist.forEach(function(m){appendBubble(m.role,m.content);});
+  }
+  scrollToBottom();
+}
+
+function openAddGame(){
+  document.getElementById('gameNameIn').value='';
+  document.getElementById('gameSituationIn').value='';
+  document.getElementById('gameNameIn').style.borderColor='';
+  document.getElementById('addModal').classList.add('show');
+  setTimeout(function(){document.getElementById('gameNameIn').focus();},60);
+}
+
+function addGame(){
+  var name=document.getElementById('gameNameIn').value.trim();
+  if(!name){document.getElementById('gameNameIn').style.borderColor='var(--red)';return;}
+  document.getElementById('gameNameIn').style.borderColor='';
+  var platform=document.getElementById('gamePlatformIn').value;
+  var situation=document.getElementById('gameSituationIn').value.trim();
+  var id='g_'+Date.now()+'_'+Math.random().toString(36).slice(2,5);
+  games.push({id:id,name:name,platform:platform,situation:situation});
+  histories[id]=[]; saveGames(); saveHistories();
+  closeModal('addModal'); renderGames(); selectGame(id,true);
+}
+
+function deleteGame(e,id){
+  e.stopPropagation();
+  if(!confirm('Remove this game? Chat history and notes will be cleared.')) return;
+  games=games.filter(function(g){return g.id!==id;});
+  delete histories[id];
+  localStorage.removeItem('cmp_notes_'+id); localStorage.removeItem('cmp_tasks_'+id);
+  saveGames(); saveHistories();
+  if(activeGameId===id){
+    activeGameId=games.length?games[games.length-1].id:null;
+    localStorage.setItem('cmp_activeGame',activeGameId||'');
+    document.getElementById('activeTag').classList.remove('show');
+    document.getElementById('msgs').innerHTML='<div class="boot-screen"><div class="boot-icon">&#128225;</div><div class="boot-title">// AWAITING MISSION BRIEF</div><div class="boot-sub">Add a game and select it to get started.</div></div>';
+    document.getElementById('notesGameBar').textContent='// SELECT A GAME';
+    document.getElementById('remGameBar').textContent='// SELECT A GAME';
+    document.getElementById('notesTa').value=''; document.getElementById('tasksList').innerHTML='';
+    if(activeGameId) selectGame(activeGameId,false);
+  }
+  renderGames();
+}
+
+function setPacing(mode){
+  pacing=mode; localStorage.setItem('cmp_pacing',mode);
+  document.getElementById('pbStep').classList.toggle('on',mode==='step');
+  document.getElementById('pbFull').classList.toggle('on',mode==='full');
+}
+
+var QA={
+  hint:'Give me a nudge in the right direction \u2014 no spoilers, just enough to unblock me.',
+  spoil:'Spoil it completely \u2014 full answer, I don\'t care about spoilers at all.',
+  guide:'Find me a walkthrough or guide for exactly where I\'m at. Check Reddit, IGN, or PowerPyx.',
+  lore:'Break down the lore and story at this point. What\'s happening and who are the key players?',
+  build:'Optimize my build \u2014 I\'m a veteran so give me something actually strong with specific item names and stats.',
+  trophy:'What trophies or achievements should I focus on right now? Any missables coming up?',
+  secrets:'Any Easter eggs, secrets, or hidden items in this area or at this point?',
+  ending:'What\'s the best ending route? Which choices and decisions actually matter?',
+  hard:'Hardest-difficulty tips for this section \u2014 what makes it brutal and how do I handle it?'
+};
+
+function quickAction(key){
+  if(!activeGameId){alert('Select a game first!');return;}
+  if(isLoading) return;
+  sendMessage(QA[key]);
+}
+
+function buildSystem(game){
+  return 'You are COMPANION \u2014 a gaming assistant for a veteran player. Friendly, casual, and direct \u2014 like a knowledgeable mate who knows everything about games. No condescension, no over-explaining basics.\n\n'+
+    'CURRENT GAME: '+game.name+' (Platform: '+game.platform+')'+(game.situation?'\nCURRENT SITUATION: '+game.situation:'')+'\n\n'+
+    'PLAYER PROFILE:\n- Veteran skill level \u2014 skip basics, get to what matters\n- Platforms: PlayStation (PS4/PS5) and PC\n'+
+    '- Preferred sources: Reddit (game-specific subreddits), IGN, PowerPyx (especially for trophies)\n'+
+    '- Always interested in: trophy hunting, Easter eggs & secrets, best ending routes, hardest-mode tips\n\n'+
+    'SPOILER POLICY: If your response contains major plot spoilers, start with exactly this on its own line:\n\u26a0\ufe0f SPOILER WARNING\nThen continue.\n\n'+
+    'PACING MODE: '+(pacing==='step'?
+      'STEP-BY-STEP \u2014 Give ONE piece of info or one step at a time. Ask if they want more. Do NOT dump everything at once.':
+      'FULL DUMP \u2014 Give the complete comprehensive answer all at once. Hold nothing back.')+'\n\n'+
+    'RULES:\n- Use web search for current, accurate, game-specific info whenever relevant\n'+
+    '- Prioritize Reddit threads, IGN guides, and PowerPyx as sources\n'+
+    '- Format clearly \u2014 use ## headers for sections, bullet points for steps\n'+
+    '- For builds, give specific item names, stats, and numbers\n'+
+    '- If unsure about something, say so rather than guessing\n'+
+    '- The player is a veteran \u2014 respect their time, be tight and useful';
+}
+
+async function sendGreeting(game){
+  var greet='Hey, just loaded up '+game.name+' on '+game.platform+'.'+(game.situation?' Currently: '+game.situation+'.':'')+' Ready to go.';
+  await callClaude(game,greet,true);
+}
+
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+}
+
+async function sendMessage(override){
+  if(isLoading) return;
+  if(!activeGameId){alert('Select a game first!');return;}
+  var input=document.getElementById('chatInput');
+  var text=override||input.value.trim();
+  if(!text) return;
+  if(!override){input.value='';autoResize(input);}
+  var bs=document.getElementById('bootScreen'); if(bs) bs.remove();
+  var game=games.find(function(g){return g.id===activeGameId;});
+  if(!game) return;
+  await callClaude(game,text,false);
+}
+
+async function callClaude(game,userText,isGreeting){
+  isLoading=true; setUI(true); hideErr();
+  if(!isGreeting){appendBubble('user',userText);pushHistory(game.id,'user',userText);}
+  var typingEl=showTyping();
+  var mightSearch=/guide|walkthrough|wiki|where|how (do|to)|find|location|boss|trophy|achievement|build|tip|strategy|secret|easter egg/i.test(userText);
+  if(mightSearch) document.getElementById('searchPill').classList.add('show');
+  try{
+    var messages=(histories[game.id]||[]).map(function(m){return{role:m.role,content:m.content};});
+    if(isGreeting) messages.push({role:'user',content:userText});
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:2048,
+        system:buildSystem(game),
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:messages
+      })
+    });
+    if(!resp.ok){var msg='API Error '+resp.status;try{var d=await resp.json();msg=d&&d.error&&d.error.message?d.error.message:msg;}catch(x){}throw new Error(msg);}
+    var data=await resp.json();
+    var aiText=extractText(data.content);
+    if(data.stop_reason==='tool_use') aiText=await doToolTurn(data.content,messages,buildSystem(game));
+    typingEl.remove(); document.getElementById('searchPill').classList.remove('show');
+    if(aiText&&aiText.trim()){appendBubble('ai',aiText);pushHistory(game.id,'assistant',aiText);}
+  }catch(err){
+    typingEl.remove(); document.getElementById('searchPill').classList.remove('show');
+    showErr('\u26a0 '+err.message);
+    appendBubble('ai','**ERROR:** '+err.message+'\n\nSomething went wrong \u2014 try again.');
+  }
+  isLoading=false; setUI(false); scrollToBottom();
+}
+
+function extractText(content){
+  if(!Array.isArray(content)) return '';
+  return content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+}
+
+async function doToolTurn(assistantContent,prevMessages,systemPrompt){
+  var toolResults=assistantContent.filter(function(b){return b.type==='tool_use';}).map(function(b){return{type:'tool_result',tool_use_id:b.id,content:'Search completed.'};});
+  if(!toolResults.length) return extractText(assistantContent);
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:2048,system:systemPrompt,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        messages:prevMessages.concat([{role:'assistant',content:assistantContent},{role:'user',content:toolResults}])
+      })
+    });
+    if(!resp.ok) return '';
+    var d=await resp.json(); return extractText(d.content);
+  }catch(x){return '';}
+}
+
+function pushHistory(gameId,role,content){
+  if(!histories[gameId]) histories[gameId]=[];
+  histories[gameId].push({role:role,content:content});
+  if(histories[gameId].length>50) histories[gameId]=histories[gameId].slice(-50);
+  saveHistories();
+}
+
+function appendBubble(role,content){
+  var el=document.createElement('div');
+  if(role==='user'){
+    el.className='msg user';
+    el.innerHTML='<div class="msg-who">YOU</div><div class="msg-body">'+esc(content).replace(/\n/g,'<br>')+'</div>';
+  } else {
+    el.className='msg ai';
+    var hasSpoiler=/\u26a0\ufe0f SPOILER WARNING/i.test(content);
+    var body='';
+    if(hasSpoiler){
+      var clean=content.replace(/\u26a0\ufe0f SPOILER WARNING[^\n]*/i,'').trim();
+      body='<div class="spoiler-banner">\u26a0\ufe0f SPOILER WARNING \u2014 PROCEED WITH CAUTION</div>'+mdToHtml(clean);
+    } else {
+      body=mdToHtml(content);
+    }
+    el.innerHTML='<div class="msg-who">COMPANION</div><div class="msg-body">'+body+'</div>';
+  }
   document.getElementById('msgs').appendChild(el);
   scrollToBottom();
-  return el;
 }
 
-function setUI(on) {
-  document.getElementById('sendBtn').disabled = on;
-  document.querySelectorAll('.qbtn').forEach(b => b.disabled = on);
+function mdToHtml(raw){
+  var t=raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t=t.replace(/```[\w]*\n?([\s\S]*?)```/g,function(_,c){return '<pre>'+c.trim()+'</pre>';});
+  t=t.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  t=t.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+  t=t.replace(/^# (.+)$/gm,'<h1>$1</h1>');
+  t=t.replace(/^---+$/gm,'<hr>');
+  t=t.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  t=t.replace(/\*([^*\n]+)\*/g,'<em>$1</em>');
+  t=t.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  t=t.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  var lines=t.split('\n'),out=[],inUl=false,inOl=false;
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i];
+    var ul=line.match(/^[\s]*[-*\u2022]\s+(.+)/);
+    var ol=line.match(/^[\s]*\d+\.\s+(.+)/);
+    if(ul){if(!inUl){out.push('<ul>');inUl=true;}if(inOl){out.push('</ol>');inOl=false;}out.push('<li>'+ul[1]+'</li>');}
+    else if(ol){if(!inOl){out.push('<ol>');inOl=true;}if(inUl){out.push('</ul>');inUl=false;}out.push('<li>'+ol[1]+'</li>');}
+    else{if(inUl){out.push('</ul>');inUl=false;}if(inOl){out.push('</ol>');inOl=false;}out.push(line);}
+  }
+  if(inUl)out.push('</ul>');if(inOl)out.push('</ol>');
+  return out.join('\n').split(/\n{2,}/).map(function(block){
+    block=block.trim();if(!block)return'';
+    if(/^<(ul|ol|h[1-6]|pre|hr|div)/.test(block))return block;
+    return'<p>'+block.replace(/\n/g,'<br>')+'</p>';
+  }).join('');
 }
 
-function scrollToBottom() {
-  const el = document.getElementById('msgs');
-  el.scrollTop = el.scrollHeight;
+function showTyping(){
+  var el=document.createElement('div');
+  el.className='typing-msg msg ai';
+  el.innerHTML='<div class="msg-who">COMPANION</div><div class="typing-dots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>';
+  document.getElementById('msgs').appendChild(el);
+  scrollToBottom(); return el;
 }
 
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+function setUI(on){
+  document.getElementById('sendBtn').disabled=on;
+  document.querySelectorAll('.qbtn').forEach(function(b){b.disabled=on;});
 }
+function showErr(msg){var b=document.getElementById('errBar');b.textContent=msg;b.classList.add('show');setTimeout(function(){b.classList.remove('show');},6000);}
+function hideErr(){document.getElementById('errBar').classList.remove('show');}
+function scrollToBottom(){var el=document.getElementById('msgs');el.scrollTop=el.scrollHeight;}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
 
-// ─────────────────────────────────────────────────────────────
-// NOTES
-// ─────────────────────────────────────────────────────────────
-function loadNotes(id) {
-  document.getElementById('notesTa').value = localStorage.getItem('cmp_notes_'+id) || '';
-  updateNotesChars();
+function loadNotes(id){document.getElementById('notesTa').value=localStorage.getItem('cmp_notes_'+id)||'';updateNotesChars();}
+function saveNotes(){
+  if(!activeGameId)return;
+  localStorage.setItem('cmp_notes_'+activeGameId,document.getElementById('notesTa').value);
+  var btn=document.getElementById('saveNotesBtn');
+  btn.textContent='SAVED \u2713';btn.classList.add('saved');
+  setTimeout(function(){btn.textContent='SAVE';btn.classList.remove('saved');},1500);
 }
-function saveNotes() {
-  if (!activeGameId) return;
-  localStorage.setItem('cmp_notes_'+activeGameId, document.getElementById('notesTa').value);
-  const btn = document.getElementById('saveNotesBtn');
-  btn.textContent='SAVED ✓'; btn.classList.add('saved');
-  setTimeout(()=>{ btn.textContent='SAVE'; btn.classList.remove('saved'); }, 1500);
-}
-function updateNotesChars() {
-  document.getElementById('notesChars').textContent = document.getElementById('notesTa').value.length + ' chars';
-}
-document.getElementById('notesTa').addEventListener('input', updateNotesChars);
+function updateNotesChars(){document.getElementById('notesChars').textContent=document.getElementById('notesTa').value.length+' chars';}
+document.getElementById('notesTa').addEventListener('input',updateNotesChars);
 
-// ─────────────────────────────────────────────────────────────
-// TASKS / REMINDERS
-// ─────────────────────────────────────────────────────────────
-function getTasks(id) { try { return JSON.parse(localStorage.getItem('cmp_tasks_'+id)||'[]'); } catch(e){ return []; } }
-function saveTasks(id,tasks) { localStorage.setItem('cmp_tasks_'+id, JSON.stringify(tasks)); }
-function loadTasks(id) { renderTasks(getTasks(id)); }
+function getTasks(id){try{return JSON.parse(localStorage.getItem('cmp_tasks_'+id)||'[]');}catch(e){return[];}}
+function saveTasks(id,tasks){localStorage.setItem('cmp_tasks_'+id,JSON.stringify(tasks));}
+function loadTasks(id){renderTasks(getTasks(id));}
+function renderTasks(tasks){
+  var el=document.getElementById('tasksList');
+  if(!tasks.length){el.innerHTML='<div class="tasks-empty">NO REMINDERS YET</div>';return;}
+  el.innerHTML=tasks.map(function(t,i){
+    return '<div class="task-item">'+
+      '<div class="task-chk'+(t.done?' done':'')+'" onclick="toggleTask('+i+')">'+(t.done?'\u2713':'')+'</div>'+
+      '<div class="task-text'+(t.done?' done':'')+'">'+esc(t.text)+'</div>'+
+      '<button class="task-del" onclick="deleteTask('+i+')">\u2715</button>'+
+      '</div>';
+  }).join('');
+}
+function addTask(){
+  if(!activeGameId)return;
+  var inp=document.getElementById('taskIn'),txt=inp.value.trim();if(!txt)return;
+  var tasks=getTasks(activeGameId);tasks.push({text:txt,done:false});
+  saveTasks(activeGameId,tasks);renderTasks(tasks);inp.value='';
+}
+function toggleTask(i){if(!activeGameId)return;var tasks=getTasks(activeGameId);tasks[i].done=!tasks[i].done;saveTasks(activeGameId,tasks);renderTasks(tasks);}
+function deleteTask(i){if(!activeGameId)return;var tasks=getTasks(activeGameId);tasks.splice(i,1);saveTasks(activeGameId,tasks);renderTasks(tasks);}
 
-function renderTasks(tasks) {
-  const el = document.getElementById('tasksList');
-  if (!tasks.length) { el.innerHTML='<div class="tasks-empty">NO REMINDERS YET</div>'; return; }
-  el.innerHTML = tasks.map((t,i) => `
-    <div class="task-item">
-      <div class="task-chk${t.done?' done':''}" onclick="toggleTask(${i})">${t.done?'✓':''}</div>
-      <div class="task-text${t.done?' done':''}">${esc(t.text)}</div>
-      <button class="task-del" onclick="deleteTask(${i})">✕</button>
-    </div>`).join('');
+function switchTab(name,btn){
+  document.querySelectorAll('.utab').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.upanel').forEach(function(p){p.classList.remove('on');});
+  btn.classList.add('on');document.getElementById('panel-'+name).classList.add('on');
 }
-
-function addTask() {
-  if (!activeGameId) return;
-  const inp = document.getElementById('taskIn');
-  const txt = inp.value.trim(); if(!txt) return;
-  const tasks = getTasks(activeGameId);
-  tasks.push({text:txt,done:false}); saveTasks(activeGameId,tasks); renderTasks(tasks); inp.value='';
-}
-function toggleTask(i) {
-  if (!activeGameId) return;
-  const tasks = getTasks(activeGameId); tasks[i].done=!tasks[i].done; saveTasks(activeGameId,tasks); renderTasks(tasks);
-}
-function deleteTask(i) {
-  if (!activeGameId) return;
-  const tasks = getTasks(activeGameId); tasks.splice(i,1); saveTasks(activeGameId,tasks); renderTasks(tasks);
-}
-
-// ─────────────────────────────────────────────────────────────
-// TABS & MODALS
-// ─────────────────────────────────────────────────────────────
-function switchTab(name, btn) {
-  document.querySelectorAll('.utab').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.upanel').forEach(p=>p.classList.remove('on'));
-  btn.classList.add('on');
-  document.getElementById('panel-'+name).classList.add('on');
-}
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-document.querySelectorAll('.modal-bg').forEach(bg =>
-  bg.addEventListener('click', e => { if(e.target===bg) bg.classList.remove('show'); }));
-document.addEventListener('keydown', e => {
-  if (e.key==='Escape') document.querySelectorAll('.modal-bg.show').forEach(m=>m.classList.remove('show'));
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.modal-bg').forEach(function(bg){
+  bg.addEventListener('click',function(e){if(e.target===bg)bg.classList.remove('show');});
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')document.querySelectorAll('.modal-bg.show').forEach(function(m){m.classList.remove('show');});
 });
 
-// ─────────────────────────────────────────────────────────────
-// UTILS
-// ─────────────────────────────────────────────────────────────
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
-}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
 
-// ─────────────────────────────────────────────────────────────
-// BOOT
-// ─────────────────────────────────────────────────────────────
 init();
 </script>
 </body>
