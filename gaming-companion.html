@@ -24,10 +24,9 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:linear-gradient(rgba(51,232,90,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(51,232,90,.018) 1px,transparent 1px);
   background-size:52px 52px;}
-
 .app{position:relative;z-index:1;display:grid;grid-template-rows:48px 1fr;grid-template-columns:220px 1fr 268px;height:100vh;overflow:hidden;}
 
-/* HEADER */
+/* ── HEADER ── */
 header{grid-column:1/-1;display:flex;align-items:center;gap:18px;padding:0 16px;
   background:var(--surface);border-bottom:1px solid var(--border-hi);position:relative;overflow:hidden;}
 header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
@@ -37,22 +36,20 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .header-mid{flex:1;display:flex;align-items:center;gap:10px;overflow:hidden;}
 .active-tag{display:none;align-items:center;gap:7px;padding:2px 13px 2px 9px;
   border:1px solid var(--border-hi);background:var(--green-glow);
-  font-family:var(--font-mono);font-size:10px;color:var(--green);letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px;}
+  font-family:var(--font-mono);font-size:10px;color:var(--green);letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;}
 .active-tag.show{display:flex;}
 .tag-arr{color:var(--amber);font-size:7px;}
 .searching-pill{display:none;align-items:center;gap:6px;padding:2px 10px;
   border:1px solid var(--amber-dim);background:var(--amber-glow);
-  font-family:var(--font-mono);font-size:9px;color:var(--amber);letter-spacing:2px;animation:pulse-amber 1s ease-in-out infinite;}
+  font-family:var(--font-mono);font-size:9px;color:var(--amber);letter-spacing:2px;animation:pulseA 1s ease-in-out infinite;}
 .searching-pill.show{display:flex;}
-@keyframes pulse-amber{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes pulseA{0%,100%{opacity:1}50%{opacity:.45}}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:16px;font-family:var(--font-mono);font-size:10px;color:var(--text-lo);flex-shrink:0;}
 .status-dot{display:flex;align-items:center;gap:5px;color:var(--green);}
 .dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:blink 2.5s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.settings-btn{background:none;border:1px solid transparent;color:var(--text-lo);cursor:pointer;font-size:13px;padding:3px 6px;transition:all .2s;}
-.settings-btn:hover{border-color:var(--border-hi);color:var(--text);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.22}}
 
-/* SIDEBAR */
+/* ── SIDEBAR ── */
 .sidebar{border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden;}
 .sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .sidebar-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--text-lo);}
@@ -77,18 +74,14 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .game-card:hover .gc-del{color:var(--text-lo);}
 .gc-del:hover{color:var(--red)!important;}
 
-/* CHAT */
+/* ── CHAT ── */
 .chat-area{display:flex;flex-direction:column;background:var(--bg);overflow:hidden;position:relative;}
-.apikey-warn{display:none;align-items:center;gap:10px;padding:6px 14px;border-bottom:1px solid var(--amber-dim);background:var(--amber-glow);font-family:var(--font-mono);font-size:10px;color:var(--amber);flex-shrink:0;}
-.apikey-warn.show{display:flex;}
-.apikey-warn button{margin-left:auto;padding:2px 10px;border:1px solid var(--amber-dim);background:transparent;color:var(--amber);cursor:pointer;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;transition:all .15s;}
-.apikey-warn button:hover{background:var(--amber-glow2);border-color:var(--amber);}
 .quick-strip{padding:7px 13px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;gap:4px;overflow-x:auto;flex-shrink:0;}
 .quick-strip::-webkit-scrollbar{height:2px;}
 .quick-strip::-webkit-scrollbar-thumb{background:var(--border-hi);}
 .qbtn{padding:3px 11px;font-family:var(--font-mono);font-size:10px;letter-spacing:.5px;border:1px solid var(--border-hi);background:transparent;color:var(--text-lo);cursor:pointer;transition:all .14s;white-space:nowrap;flex-shrink:0;}
 .qbtn:hover{border-color:var(--green);color:var(--green);background:var(--green-glow);}
-.qbtn.amber:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-glow);}
+.qbtn.amb:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-glow);}
 .qbtn:disabled{opacity:.3;cursor:not-allowed;}
 .pacing-bar{display:flex;align-items:center;gap:7px;padding:5px 13px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;}
 .pacing-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);}
@@ -107,17 +100,16 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .msg{display:flex;flex-direction:column;max-width:90%;animation:scanIn .22s ease;flex-shrink:0;}
 .msg.user{align-self:flex-end;align-items:flex-end;}
 .msg.ai{align-self:flex-start;align-items:flex-start;}
-.msg.system-msg{align-self:center;align-items:center;max-width:100%;}
 .msg-who{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);margin-bottom:4px;text-transform:uppercase;}
 .msg.user .msg-who{color:var(--amber-dim);}
 .msg-body{padding:10px 14px;font-size:13px;line-height:1.7;color:var(--text-hi);position:relative;word-break:break-word;}
 .msg.user .msg-body{background:var(--amber-glow);border:1px solid var(--amber-dim);border-right:2px solid var(--amber);}
 .msg.ai .msg-body{background:var(--green-glow);border:1px solid var(--border-hi);border-left:2px solid var(--green);}
-.msg.system-msg .msg-body{background:transparent;border:none;border-top:1px solid var(--border);border-bottom:1px solid var(--border);color:var(--text-lo);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-align:center;padding:5px 24px;}
 .msg-body p{margin-bottom:8px;}.msg-body p:last-child{margin-bottom:0;}
 .msg-body strong{color:var(--green);font-weight:600;}
 .msg-body em{color:var(--amber);font-style:normal;}
 .msg-body code{background:rgba(0,0,0,.45);padding:1px 5px;font-family:var(--font-mono);font-size:11px;color:var(--amber);}
+.msg-body pre{background:rgba(0,0,0,.4);padding:10px;margin:8px 0;overflow-x:auto;font-family:var(--font-mono);font-size:11px;color:var(--amber);border-left:2px solid var(--amber-dim);}
 .msg-body ul,.msg-body ol{padding-left:18px;margin:6px 0 8px;}
 .msg-body li{margin-bottom:4px;font-size:13px;}
 .msg-body h1{font-family:var(--font-mono);font-size:12px;letter-spacing:3px;color:var(--green);margin:10px 0 6px;text-transform:uppercase;}
@@ -142,7 +134,7 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .scroll-btn.show{display:flex;}
 .scroll-btn:hover{border-color:var(--green);color:var(--green);}
 
-/* UTILITIES */
+/* ── UTILITIES ── */
 .utilities{border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden;}
 .util-tabs{display:flex;border-bottom:1px solid var(--border-hi);flex-shrink:0;}
 .utab{flex:1;padding:10px 6px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text-lo);cursor:pointer;transition:all .16s;}
@@ -177,7 +169,7 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .task-item:hover .task-del{color:var(--text-lo);}
 .task-del:hover{color:var(--red)!important;}
 
-/* MODALS */
+/* ── MODALS ── */
 .modal-bg{display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.82);align-items:center;justify-content:center;}
 .modal-bg.show{display:flex;animation:fadeUp .15s ease;}
 .modal{background:var(--panel-hi);border:1px solid var(--border-hi);width:390px;padding:26px;position:relative;}
@@ -189,8 +181,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .finput,.fselect{width:100%;background:var(--surface);border:1px solid var(--border-hi);color:var(--text-hi);padding:8px 11px;font-family:var(--font-mono);font-size:12px;outline:none;transition:border-color .2s;}
 .finput:focus,.fselect:focus{border-color:var(--green);}
 .fselect option{background:var(--panel-hi);}
-.fhint{font-family:var(--font-mono);font-size:10px;color:var(--text-lo);margin-top:6px;line-height:1.7;}
-.fhint a{color:var(--green);}
 .modal-btns{display:flex;gap:8px;margin-top:22px;}
 .mbtn{padding:8px 20px;font-family:var(--font-hud);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:1px solid;cursor:pointer;transition:all .2s;}
 .mbtn-primary{border-color:var(--green);background:var(--green-glow);color:var(--green);}
@@ -212,7 +202,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   <div class="header-right">
     <div class="status-dot"><div class="dot"></div> ONLINE</div>
     <span id="clock">--:--</span>
-    <button class="settings-btn" onclick="openSettings()" title="Settings">⚙</button>
   </div>
 </header>
 
@@ -227,20 +216,16 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 
 <!-- CHAT -->
 <main class="chat-area">
-  <div class="apikey-warn" id="apiWarn">
-    ⚠ NO API KEY — COMPANION IS OFFLINE
-    <button onclick="openSettings()">SET KEY</button>
-  </div>
   <div class="quick-strip">
-    <button class="qbtn"       onclick="quickAction('hint')">💡 Hint</button>
-    <button class="qbtn amber" onclick="quickAction('spoil')">⚠️ Spoil It</button>
-    <button class="qbtn"       onclick="quickAction('guide')">🔍 Guide</button>
-    <button class="qbtn"       onclick="quickAction('lore')">📖 Lore</button>
-    <button class="qbtn"       onclick="quickAction('build')">⚙️ Build</button>
-    <button class="qbtn"       onclick="quickAction('trophy')">🏆 Trophies</button>
-    <button class="qbtn"       onclick="quickAction('secrets')">🥚 Secrets</button>
-    <button class="qbtn"       onclick="quickAction('ending')">🏁 Best Ending</button>
-    <button class="qbtn"       onclick="quickAction('hard')">💀 Hard Mode</button>
+    <button class="qbtn"     onclick="quickAction('hint')">💡 Hint</button>
+    <button class="qbtn amb" onclick="quickAction('spoil')">⚠️ Spoil It</button>
+    <button class="qbtn"     onclick="quickAction('guide')">🔍 Guide</button>
+    <button class="qbtn"     onclick="quickAction('lore')">📖 Lore</button>
+    <button class="qbtn"     onclick="quickAction('build')">⚙️ Build</button>
+    <button class="qbtn"     onclick="quickAction('trophy')">🏆 Trophies</button>
+    <button class="qbtn"     onclick="quickAction('secrets')">🥚 Secrets</button>
+    <button class="qbtn"     onclick="quickAction('ending')">🏁 Best Ending</button>
+    <button class="qbtn"     onclick="quickAction('hard')">💀 Hard Mode</button>
   </div>
   <div class="pacing-bar">
     <span class="pacing-lbl">PACING:</span>
@@ -270,7 +255,7 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   </div>
   <div class="upanel on" id="panel-notes">
     <div class="util-game-bar" id="notesGameBar">// SELECT A GAME</div>
-    <textarea class="notes-ta" id="notesTa" placeholder="Jot anything here — locations, passwords, NPC names, codes, key items..."></textarea>
+    <textarea class="notes-ta" id="notesTa" placeholder="Jot anything — locations, passwords, NPC names, codes, key items..."></textarea>
     <div class="notes-foot">
       <span class="notes-chars" id="notesChars">0 chars</span>
       <button class="save-btn" id="saveNotesBtn" onclick="saveNotes()">SAVE</button>
@@ -316,91 +301,61 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   </div>
 </div>
 
-<!-- SETTINGS MODAL -->
-<div class="modal-bg" id="settingsModal">
-  <div class="modal">
-    <div class="modal-title">// CONFIG</div>
-    <div class="fgroup">
-      <label class="flabel">ANTHROPIC API KEY</label>
-      <input class="finput" id="apiKeyIn" type="password" placeholder="sk-ant-...">
-      <p class="fhint">Stored locally in your browser only — never sent anywhere else.<br>
-      Get a free key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
-    </div>
-    <div class="modal-btns">
-      <button class="mbtn mbtn-primary" onclick="saveSettings()">SAVE CONFIG</button>
-      <button class="mbtn mbtn-ghost"   onclick="closeModal('settingsModal')">CANCEL</button>
-    </div>
-  </div>
-</div>
-
 <script>
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 // STATE
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 let games        = [];
 let activeGameId = null;
 let pacing       = 'step';
 let isLoading    = false;
-let histories    = {};
+let histories    = {};   // { gameId: [{role, content}] }
 
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 // INIT
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 function init() {
-  try { games     = JSON.parse(localStorage.getItem('cmp_games')     || '[]'); } catch(e){ games = []; }
-  try { histories = JSON.parse(localStorage.getItem('cmp_histories') || '{}'); } catch(e){ histories = {}; }
+  try { games     = JSON.parse(localStorage.getItem('cmp_games')     || '[]'); } catch(e){ games=[]; }
+  try { histories = JSON.parse(localStorage.getItem('cmp_histories') || '{}'); } catch(e){ histories={}; }
   activeGameId = localStorage.getItem('cmp_activeGame') || null;
   pacing       = localStorage.getItem('cmp_pacing') || 'step';
   setPacing(pacing);
   renderGames();
-  if (activeGameId && games.find(g => g.id === activeGameId)) {
-    selectGame(activeGameId, false);
-  }
-  checkApiKey();
+  if (activeGameId && games.find(g => g.id === activeGameId)) selectGame(activeGameId, false);
   tickClock();
   setInterval(tickClock, 10000);
-  setInterval(autoSaveNotes, 10000);
+  setInterval(() => { if(activeGameId) localStorage.setItem('cmp_notes_'+activeGameId, document.getElementById('notesTa').value); }, 10000);
   document.getElementById('msgs').addEventListener('scroll', function() {
-    const nearBottom = this.scrollHeight - this.scrollTop - this.clientHeight < 80;
-    document.getElementById('scrollBtn').classList.toggle('show', !nearBottom);
+    const near = this.scrollHeight - this.scrollTop - this.clientHeight < 80;
+    document.getElementById('scrollBtn').classList.toggle('show', !near);
   });
 }
 
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 // CLOCK
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 function tickClock() {
   const d = new Date();
   document.getElementById('clock').textContent =
     String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
 }
 
-// =====================================================================
-// API KEY
-// =====================================================================
-function getApiKey() { return localStorage.getItem('cmp_apikey') || ''; }
-function checkApiKey() {
-  document.getElementById('apiWarn').classList.toggle('show', !getApiKey());
-}
-
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 // GAMES
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 function saveGames()     { localStorage.setItem('cmp_games',     JSON.stringify(games));     }
 function saveHistories() { localStorage.setItem('cmp_histories', JSON.stringify(histories)); }
 
 function renderGames() {
   const el = document.getElementById('gamesList');
   if (!games.length) {
-    el.innerHTML = `<div class="no-games">
-      <div class="no-games-icon">🎮</div>
+    el.innerHTML = `<div class="no-games"><div class="no-games-icon">🎮</div>
       <div class="no-games-title">NO ACTIVE OPS</div>
-      <div class="no-games-sub">Hit + to track<br>a new game</div>
-    </div>`;
+      <div class="no-games-sub">Hit + to track<br>a new game</div></div>`;
     return;
   }
   el.innerHTML = games.map(g => `
-    <div class="game-card${g.id === activeGameId ? ' active' : ''}" onclick="selectGame('${g.id}',true)">
+    <div class="game-card${g.id===activeGameId?' active':''}" onclick="selectGame('${g.id}',true)">
       <div class="gc-name">${esc(g.name)}</div>
       <div class="gc-meta"><span class="gc-platform">${esc(g.platform)}</span></div>
       <button class="gc-del" onclick="deleteGame(event,'${g.id}')" title="Remove">✕</button>
@@ -419,25 +374,21 @@ function selectGame(id, showGreeting) {
   if (showGreeting && (!histories[id] || !histories[id].length)) sendGreeting(g);
   loadNotes(id);
   loadTasks(id);
-  updateUtilBars(g.name);
-}
-
-function updateUtilBars(name) {
-  const n = esc(name);
-  document.getElementById('notesGameBar').innerHTML = `// NOTES &nbsp;<span class="gname">${n}</span>`;
-  document.getElementById('remGameBar').innerHTML   = `// REMINDERS &nbsp;<span class="gname">${n}</span>`;
+  document.getElementById('notesGameBar').innerHTML = `// NOTES &nbsp;<span class="gname">${esc(g.name)}</span>`;
+  document.getElementById('remGameBar').innerHTML   = `// REMINDERS &nbsp;<span class="gname">${esc(g.name)}</span>`;
 }
 
 function renderHistory(id) {
   const el = document.getElementById('msgs');
   el.innerHTML = '';
-  (histories[id] || []).forEach(m => appendBubble(m.role, m.content, false));
-  if (!histories[id] || !histories[id].length) {
+  const hist = histories[id] || [];
+  if (!hist.length) {
     el.innerHTML = `<div class="boot-screen" id="bootScreen">
       <div class="boot-icon">📡</div>
       <div class="boot-title">// AWAITING MISSION BRIEF</div>
-      <div class="boot-sub">Tell me where you're stuck.<br>I'll only step in when you need it.</div>
-    </div>`;
+      <div class="boot-sub">Tell me where you're stuck.<br>I'll only step in when you need it.</div></div>`;
+  } else {
+    hist.forEach(m => appendBubble(m.role, m.content, false));
   }
   scrollToBottom();
 }
@@ -452,7 +403,7 @@ function openAddGame() {
 function addGame() {
   const name = document.getElementById('gameNameIn').value.trim();
   if (!name) { document.getElementById('gameNameIn').style.borderColor='var(--red)'; return; }
-  document.getElementById('gameNameIn').style.borderColor='';
+  document.getElementById('gameNameIn').style.borderColor = '';
   const platform  = document.getElementById('gamePlatformIn').value;
   const situation = document.getElementById('gameSituationIn').value.trim();
   const id = 'g_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
@@ -466,21 +417,19 @@ function addGame() {
 
 function deleteGame(e, id) {
   e.stopPropagation();
-  if (!confirm('Remove this game? Chat history and notes will be deleted.')) return;
+  if (!confirm('Remove this game and all its data?')) return;
   games = games.filter(g => g.id !== id);
   delete histories[id];
   localStorage.removeItem('cmp_notes_' + id);
   localStorage.removeItem('cmp_tasks_' + id);
   saveGames(); saveHistories();
   if (activeGameId === id) {
-    activeGameId = games.length ? games[games.length - 1].id : null;
+    activeGameId = games.length ? games[games.length-1].id : null;
     localStorage.setItem('cmp_activeGame', activeGameId || '');
     document.getElementById('activeTag').classList.remove('show');
     document.getElementById('msgs').innerHTML = `<div class="boot-screen">
-      <div class="boot-icon">📡</div>
-      <div class="boot-title">// AWAITING MISSION BRIEF</div>
-      <div class="boot-sub">Add a game from the sidebar and select it.<br>Tell me where you're stuck.</div>
-    </div>`;
+      <div class="boot-icon">📡</div><div class="boot-title">// AWAITING MISSION BRIEF</div>
+      <div class="boot-sub">Add a game from the sidebar and select it.</div></div>`;
     document.getElementById('notesGameBar').textContent = '// SELECT A GAME';
     document.getElementById('remGameBar').textContent   = '// SELECT A GAME';
     document.getElementById('notesTa').value = '';
@@ -490,40 +439,24 @@ function deleteGame(e, id) {
   renderGames();
 }
 
-// =====================================================================
-// SETTINGS
-// =====================================================================
-function openSettings() {
-  document.getElementById('apiKeyIn').value = getApiKey();
-  document.getElementById('settingsModal').classList.add('show');
-  setTimeout(() => document.getElementById('apiKeyIn').focus(), 60);
-}
-function saveSettings() {
-  const key = document.getElementById('apiKeyIn').value.trim();
-  if (key) localStorage.setItem('cmp_apikey', key);
-  else localStorage.removeItem('cmp_apikey');
-  closeModal('settingsModal');
-  checkApiKey();
-}
-
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 // PACING
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 function setPacing(mode) {
   pacing = mode;
   localStorage.setItem('cmp_pacing', mode);
-  document.getElementById('pbStep').classList.toggle('on', mode === 'step');
-  document.getElementById('pbFull').classList.toggle('on', mode === 'full');
+  document.getElementById('pbStep').classList.toggle('on', mode==='step');
+  document.getElementById('pbFull').classList.toggle('on', mode==='full');
 }
 
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 // QUICK ACTIONS
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 const QA = {
   hint:    "Give me a nudge in the right direction — no spoilers, just enough to unblock me.",
-  spoil:   "Spoil it completely — give me the full answer, I don't care about spoilers at all.",
+  spoil:   "Spoil it completely — full answer, I don't care about spoilers at all.",
   guide:   "Find me a walkthrough or guide for exactly where I'm at. Check Reddit, IGN, or PowerPyx.",
-  lore:    "Break down the lore and story for me. What's happening narratively and who are the key players?",
+  lore:    "Break down the lore and story for me. What's happening and who are the key players?",
   build:   "Optimize my build. I'm a veteran so give me something actually strong with specific stats/items.",
   trophy:  "What trophies or achievements should I focus on right now? Any missables I need to watch for?",
   secrets: "Any Easter eggs, secrets, or hidden items in this area or at this point in the game?",
@@ -536,42 +469,44 @@ function quickAction(key) {
   sendMessage(QA[key]);
 }
 
-// =====================================================================
-// CHAT
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
+// SYSTEM PROMPT BUILDER
+// ─────────────────────────────────────────────────────────────
 function buildSystem(game) {
-  return `You are COMPANION — a gaming assistant for a veteran player. You're friendly, casual, and direct, like a knowledgeable mate who happens to know everything about games. No condescension, no over-explaining basics.
+  return `You are COMPANION — a gaming assistant for a veteran player. You're friendly, casual, and direct — like a knowledgeable mate who happens to know everything about games. No condescension, no over-explaining basics.
 
 CURRENT GAME: ${game.name} (Platform: ${game.platform})${game.situation ? '\nCURRENT SITUATION: ' + game.situation : ''}
 
 PLAYER PROFILE:
 - Veteran skill level — skip the basics, get straight to what matters
 - Platforms: PlayStation (PS4/PS5) and PC
-- Needs help with: walkthroughs, puzzle solving, lore, and build optimization
-- Preferred sources: Reddit (game subreddits and r/gaming), IGN guides, PowerPyx (especially trophy guides)
+- Needs: walkthroughs, puzzle solving, lore, build optimization
+- Preferred sources: Reddit (game-specific subreddits + r/gaming), IGN guides, PowerPyx (especially for trophy guides)
 - Always interested in: trophy/achievement hunting, Easter eggs & secrets, best ending routes, hardest-mode specific tips
 
-SPOILER POLICY: If your response contains major plot spoilers or story reveals, you MUST start with this exact line on its own:
+SPOILER POLICY: If your response contains major plot spoilers or story reveals, you MUST start your response with exactly this on its own line:
 ⚠️ SPOILER WARNING
-Then continue with your response.
+Then continue with your response on the next line.
 
 PACING MODE: ${pacing === 'step'
-  ? 'STEP-BY-STEP — Give ONE step or piece of information at a time. End with something like "let me know when you\'re ready for the next part." Do NOT dump everything at once unless asked.'
-  : 'FULL DUMP — Give the complete, comprehensive answer all at once. Hold nothing back.'}
+  ? "STEP-BY-STEP — Give ONE step or piece of information at a time. End your response with something like 'ready for the next part?' Do NOT dump everything at once."
+  : "FULL DUMP — Give the complete, comprehensive answer all at once. Be thorough and hold nothing back."}
 
 BEHAVIOUR:
 - Use web search to find current, accurate, game-specific info whenever relevant
 - Prioritize Reddit community threads, IGN, and PowerPyx as sources
-- Format responses clearly — use headers (##) for sections, bullet points for steps
-- For builds, give specific item names, stats, and numbers
+- Use headers (##) for sections, bullet points for steps
+- For builds, give specific item names, stat numbers, skill names
 - If unsure about something specific, say so rather than guessing
-- Keep responses tight and useful — the player is a veteran, respect their time`;
+- Keep it tight and useful — the player is a veteran, respect their time`;
 }
 
+// ─────────────────────────────────────────────────────────────
+// CHAT ENGINE
+// ─────────────────────────────────────────────────────────────
 async function sendGreeting(game) {
-  if (!getApiKey()) return;
-  const greet = `Hey, just loaded up ${game.name} on ${game.platform}.${game.situation ? ' Currently: ' + game.situation + '.' : ''} Ready to help when I need it.`;
-  await callClaude(game, greet, true);
+  const msg = `Hey, just loaded up ${game.name} on ${game.platform}.${game.situation ? ' I\'m currently: ' + game.situation + '.' : ''} Brief me on anything critical I should know right now, then stand by.`;
+  await callClaude(game, msg, true);
 }
 
 function handleKey(e) {
@@ -581,7 +516,6 @@ function handleKey(e) {
 async function sendMessage(override) {
   if (isLoading) return;
   if (!activeGameId) { alert('Select a game first!'); return; }
-  if (!getApiKey())  { openSettings(); return; }
   const input = document.getElementById('chatInput');
   const text  = override || input.value.trim();
   if (!text) return;
@@ -594,25 +528,26 @@ async function sendMessage(override) {
 
 async function callClaude(game, userText, isGreeting) {
   isLoading = true;
-  setLoadingUI(true);
+  setUI(true);
+
   if (!isGreeting) {
     appendBubble('user', userText, true);
     pushHistory(game.id, 'user', userText);
   }
+
   const typingEl = showTyping();
   const mightSearch = /guide|walkthrough|where|how (do|to)|find|location|boss|trophy|achievement|build|loadout|tip|strategy|secret|easter egg/i.test(userText);
   if (mightSearch) document.getElementById('searchPill').classList.add('show');
 
-  try {
-    // Build messages array from history
-    const messages = (histories[game.id] || []).map(m => ({ role: m.role, content: m.content }));
-    if (isGreeting) messages.push({ role: 'user', content: userText });
+  // Build the messages array
+  const messages = (histories[game.id] || []).map(m => ({ role: m.role, content: m.content }));
+  if (isGreeting) messages.push({ role: 'user', content: userText });
 
+  try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': getApiKey(),
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
       },
@@ -627,14 +562,14 @@ async function callClaude(game, userText, isGreeting) {
 
     if (!resp.ok) {
       let msg = `API Error ${resp.status}`;
-      try { const d = await resp.json(); msg = d?.error?.message || msg; } catch(_){}
+      try { const d = await resp.json(); msg = d?.error?.message || msg; } catch(_) {}
       throw new Error(msg);
     }
 
     const data = await resp.json();
     let aiText = extractText(data.content);
 
-    // If stopped for tool use, do a follow-up turn
+    // Handle tool use turn
     if (data.stop_reason === 'tool_use') {
       aiText = await doToolTurn(data.content, messages, buildSystem(game));
     }
@@ -650,11 +585,11 @@ async function callClaude(game, userText, isGreeting) {
   } catch(err) {
     typingEl.remove();
     document.getElementById('searchPill').classList.remove('show');
-    appendBubble('ai', `**CONNECTION ERROR**\n\n${err.message}\n\nCheck your API key in settings (⚙) or try again.`, true);
+    appendBubble('ai', `**CONNECTION ERROR**\n\n${err.message}\n\nPlease try again.`, true);
   }
 
   isLoading = false;
-  setLoadingUI(false);
+  setUI(false);
   scrollToBottom();
 }
 
@@ -664,25 +599,15 @@ function extractText(content) {
 }
 
 async function doToolTurn(assistantContent, prevMessages, systemPrompt) {
-  // Build tool results for any tool_use blocks
   const toolResults = assistantContent
     .filter(b => b.type === 'tool_use')
-    .map(b => ({ type: 'tool_result', tool_use_id: b.id, content: 'Web search completed.' }));
-
+    .map(b => ({ type: 'tool_result', tool_use_id: b.id, content: 'Search completed.' }));
   if (!toolResults.length) return extractText(assistantContent);
-
-  const nextMessages = [
-    ...prevMessages,
-    { role: 'assistant', content: assistantContent },
-    { role: 'user',      content: toolResults }
-  ];
-
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': getApiKey(),
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
       },
@@ -691,12 +616,15 @@ async function doToolTurn(assistantContent, prevMessages, systemPrompt) {
         max_tokens: 2048,
         system: systemPrompt,
         tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-        messages: nextMessages
+        messages: [
+          ...prevMessages,
+          { role: 'assistant', content: assistantContent },
+          { role: 'user', content: toolResults }
+        ]
       })
     });
     if (!resp.ok) return '';
     const d = await resp.json();
-    // Could recurse if another tool_use, but cap at one extra turn for safety
     return extractText(d.content);
   } catch(_) { return ''; }
 }
@@ -704,14 +632,13 @@ async function doToolTurn(assistantContent, prevMessages, systemPrompt) {
 function pushHistory(gameId, role, content) {
   if (!histories[gameId]) histories[gameId] = [];
   histories[gameId].push({ role, content });
-  // Keep last 50 exchanges to avoid token limits
   if (histories[gameId].length > 50) histories[gameId] = histories[gameId].slice(-50);
   saveHistories();
 }
 
-// =====================================================================
-// BUBBLES
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
+// RENDERING
+// ─────────────────────────────────────────────────────────────
 function appendBubble(role, content, animate) {
   const el = document.createElement('div');
   if (role === 'user') {
@@ -723,9 +650,9 @@ function appendBubble(role, content, animate) {
     let body = '';
     if (hasSpoiler) {
       const clean = content.replace(/⚠️ SPOILER WARNING[^\n]*/i, '').trim();
-      body = `<div class="spoiler-banner">⚠️ SPOILER WARNING — PROCEED WITH CAUTION</div>` + mdToHtml(clean);
+      body = `<div class="spoiler-banner">⚠️ SPOILER WARNING — PROCEED WITH CAUTION</div>` + md(clean);
     } else {
-      body = mdToHtml(content);
+      body = md(content);
     }
     el.innerHTML = `<div class="msg-who">COMPANION</div><div class="msg-body">${body}</div>`;
   }
@@ -733,66 +660,49 @@ function appendBubble(role, content, animate) {
   scrollToBottom();
 }
 
-function mdToHtml(text) {
-  // Escape HTML first
-  let t = text
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-  // Code blocks (``` ... ```) — handle before inline code
-  t = t.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, code) =>
-    `<pre style="background:rgba(0,0,0,.4);padding:10px;margin:8px 0;overflow-x:auto;font-family:var(--font-mono);font-size:11px;color:var(--amber);border-left:2px solid var(--amber-dim)">${code.trim()}</pre>`);
-
+function md(text) {
+  let t = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // Fenced code blocks
+  t = t.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, c) =>
+    `<pre>${c.trim()}</pre>`);
   // Headings
-  t = t.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  t = t.replace(/^## (.+)$/gm,  '<h2>$1</h2>');
-  t = t.replace(/^# (.+)$/gm,   '<h1>$1</h1>');
-
-  // Horizontal rule
-  t = t.replace(/^---+$/gm, '<hr>');
-
-  // Bold
-  t = t.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
-  // Italic (only * form, not _)
-  t = t.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
-  // Inline code
-  t = t.replace(/`([^`\n]+)`/g, '<code>$1</code>');
-  // Links
-  t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-
-  // Process line by line for lists and paragraphs
+  t = t.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  t = t.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  t = t.replace(/^# (.+)$/gm,  '<h1>$1</h1>');
+  // HR
+  t = t.replace(/^---+$/gm,'<hr>');
+  // Bold, italic, inline code, links
+  t = t.replace(/\*\*([^*\n]+)\*\*/g,   '<strong>$1</strong>');
+  t = t.replace(/\*([^*\n]+)\*/g,        '<em>$1</em>');
+  t = t.replace(/`([^`\n]+)`/g,          '<code>$1</code>');
+  t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  // Lists
   const lines = t.split('\n');
-  const out   = [];
+  const out = [];
   let inUl = false, inOl = false;
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const ulMatch = line.match(/^[\s]*[-*•]\s+(.+)/);
-    const olMatch = line.match(/^[\s]*\d+\.\s+(.+)/);
-
-    if (ulMatch) {
-      if (!inUl) { out.push('<ul>'); inUl = true; }
-      if (inOl)  { out.push('</ol>'); inOl = false; }
-      out.push(`<li>${ulMatch[1]}</li>`);
-    } else if (olMatch) {
-      if (!inOl) { out.push('<ol>'); inOl = true; }
-      if (inUl)  { out.push('</ul>'); inUl = false; }
-      out.push(`<li>${olMatch[1]}</li>`);
+  for (const line of lines) {
+    const ul = line.match(/^[ \t]*[-*•]\s+(.+)/);
+    const ol = line.match(/^[ \t]*\d+\.\s+(.+)/);
+    if (ul) {
+      if (!inUl) { if (inOl) { out.push('</ol>'); inOl=false; } out.push('<ul>'); inUl=true; }
+      out.push(`<li>${ul[1]}</li>`);
+    } else if (ol) {
+      if (!inOl) { if (inUl) { out.push('</ul>'); inUl=false; } out.push('<ol>'); inOl=true; }
+      out.push(`<li>${ol[1]}</li>`);
     } else {
-      if (inUl) { out.push('</ul>'); inUl = false; }
-      if (inOl) { out.push('</ol>'); inOl = false; }
+      if (inUl) { out.push('</ul>'); inUl=false; }
+      if (inOl) { out.push('</ol>'); inOl=false; }
       out.push(line);
     }
   }
   if (inUl) out.push('</ul>');
   if (inOl) out.push('</ol>');
-
-  // Wrap non-tag blocks in paragraphs
-  const blocks = out.join('\n').split(/\n{2,}/);
-  return blocks.map(block => {
+  // Paragraphs
+  return out.join('\n').split(/\n{2,}/).map(block => {
     block = block.trim();
     if (!block) return '';
-    if (/^<(ul|ol|li|h[1-6]|pre|hr|div)/.test(block)) return block;
-    return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+    if (/^<(ul|ol|h[1-6]|pre|hr|div)/.test(block)) return block;
+    return '<p>' + block.replace(/\n/g,'<br>') + '</p>';
   }).join('');
 }
 
@@ -805,7 +715,7 @@ function showTyping() {
   return el;
 }
 
-function setLoadingUI(on) {
+function setUI(on) {
   document.getElementById('sendBtn').disabled = on;
   document.querySelectorAll('.qbtn').forEach(b => b.disabled = on);
 }
@@ -820,43 +730,39 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 // NOTES
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 function loadNotes(id) {
-  document.getElementById('notesTa').value = localStorage.getItem('cmp_notes_' + id) || '';
+  document.getElementById('notesTa').value = localStorage.getItem('cmp_notes_'+id) || '';
   updateNotesChars();
 }
 function saveNotes() {
   if (!activeGameId) return;
-  localStorage.setItem('cmp_notes_' + activeGameId, document.getElementById('notesTa').value);
+  localStorage.setItem('cmp_notes_'+activeGameId, document.getElementById('notesTa').value);
   const btn = document.getElementById('saveNotesBtn');
-  btn.textContent = 'SAVED ✓'; btn.classList.add('saved');
-  setTimeout(() => { btn.textContent = 'SAVE'; btn.classList.remove('saved'); }, 1500);
+  btn.textContent='SAVED ✓'; btn.classList.add('saved');
+  setTimeout(()=>{ btn.textContent='SAVE'; btn.classList.remove('saved'); }, 1500);
 }
 function updateNotesChars() {
   document.getElementById('notesChars').textContent = document.getElementById('notesTa').value.length + ' chars';
 }
-function autoSaveNotes() {
-  if (activeGameId) localStorage.setItem('cmp_notes_' + activeGameId, document.getElementById('notesTa').value);
-}
 document.getElementById('notesTa').addEventListener('input', updateNotesChars);
 
-// =====================================================================
-// TASKS
-// =====================================================================
-function getTasks(id)        { try { return JSON.parse(localStorage.getItem('cmp_tasks_' + id) || '[]'); } catch(e){ return []; } }
-function saveTasks(id, tasks){ localStorage.setItem('cmp_tasks_' + id, JSON.stringify(tasks)); }
-
+// ─────────────────────────────────────────────────────────────
+// TASKS / REMINDERS
+// ─────────────────────────────────────────────────────────────
+function getTasks(id) { try { return JSON.parse(localStorage.getItem('cmp_tasks_'+id)||'[]'); } catch(e){ return []; } }
+function saveTasks(id,tasks) { localStorage.setItem('cmp_tasks_'+id, JSON.stringify(tasks)); }
 function loadTasks(id) { renderTasks(getTasks(id)); }
 
 function renderTasks(tasks) {
   const el = document.getElementById('tasksList');
-  if (!tasks.length) { el.innerHTML = '<div class="tasks-empty">NO REMINDERS YET</div>'; return; }
-  el.innerHTML = tasks.map((t, i) => `
+  if (!tasks.length) { el.innerHTML='<div class="tasks-empty">NO REMINDERS YET</div>'; return; }
+  el.innerHTML = tasks.map((t,i) => `
     <div class="task-item">
-      <div class="task-chk${t.done ? ' done' : ''}" onclick="toggleTask(${i})">${t.done ? '✓' : ''}</div>
-      <div class="task-text${t.done ? ' done' : ''}">${esc(t.text)}</div>
+      <div class="task-chk${t.done?' done':''}" onclick="toggleTask(${i})">${t.done?'✓':''}</div>
+      <div class="task-text${t.done?' done':''}">${esc(t.text)}</div>
       <button class="task-del" onclick="deleteTask(${i})">✕</button>
     </div>`).join('');
 }
@@ -864,53 +770,46 @@ function renderTasks(tasks) {
 function addTask() {
   if (!activeGameId) return;
   const inp = document.getElementById('taskIn');
-  const txt = inp.value.trim();
-  if (!txt) return;
+  const txt = inp.value.trim(); if(!txt) return;
   const tasks = getTasks(activeGameId);
-  tasks.push({ text: txt, done: false });
-  saveTasks(activeGameId, tasks);
-  renderTasks(tasks);
-  inp.value = '';
+  tasks.push({text:txt,done:false}); saveTasks(activeGameId,tasks); renderTasks(tasks); inp.value='';
 }
 function toggleTask(i) {
   if (!activeGameId) return;
-  const tasks = getTasks(activeGameId); tasks[i].done = !tasks[i].done;
-  saveTasks(activeGameId, tasks); renderTasks(tasks);
+  const tasks = getTasks(activeGameId); tasks[i].done=!tasks[i].done; saveTasks(activeGameId,tasks); renderTasks(tasks);
 }
 function deleteTask(i) {
   if (!activeGameId) return;
-  const tasks = getTasks(activeGameId); tasks.splice(i, 1);
-  saveTasks(activeGameId, tasks); renderTasks(tasks);
+  const tasks = getTasks(activeGameId); tasks.splice(i,1); saveTasks(activeGameId,tasks); renderTasks(tasks);
 }
 
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 // TABS & MODALS
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 function switchTab(name, btn) {
-  document.querySelectorAll('.utab').forEach(b => b.classList.remove('on'));
-  document.querySelectorAll('.upanel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.utab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.upanel').forEach(p=>p.classList.remove('on'));
   btn.classList.add('on');
-  document.getElementById('panel-' + name).classList.add('on');
+  document.getElementById('panel-'+name).classList.add('on');
 }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 document.querySelectorAll('.modal-bg').forEach(bg =>
-  bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('show'); }));
+  bg.addEventListener('click', e => { if(e.target===bg) bg.classList.remove('show'); }));
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.querySelectorAll('.modal-bg.show').forEach(m => m.classList.remove('show'));
+  if (e.key==='Escape') document.querySelectorAll('.modal-bg.show').forEach(m=>m.classList.remove('show'));
 });
 
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
 // UTILS
-// =====================================================================
-function esc(str) {
-  return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+// ─────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
 
-// =====================================================================
-// GO
-// =====================================================================
+// ─────────────────────────────────────────────────────────────
+// BOOT
+// ─────────────────────────────────────────────────────────────
 init();
 </script>
 </body>
