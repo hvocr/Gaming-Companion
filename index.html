@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#030803">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Companion">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>COMPANION-OPS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#030803;--surface:#060f06;--panel:#091409;--panel-hi:#0c1e0c;
+  --border:#152815;--border-hi:#1f4a1f;
+  --green:#33e85a;--green-dim:#1a6b2e;--green-glow:rgba(51,232,90,0.07);--green-glow2:rgba(51,232,90,0.16);
+  --amber:#e8a020;--amber-dim:#7a5010;--amber-glow:rgba(232,160,32,0.07);--amber-glow2:rgba(232,160,32,0.18);
+  --red:#e84040;--red-glow:rgba(232,64,64,0.10);
+  --text:#7dc98a;--text-hi:#c5edcc;--text-lo:#2e5c38;
+  --font-hud:'Orbitron',sans-serif;--font-mono:'Share Tech Mono',monospace;--font-body:'Exo 2',sans-serif;
+  --sb:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{color:var(--text);font-family:var(--font-body);height:100vh;}
+body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.08) 3px,rgba(0,0,0,.08) 4px);}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(51,232,90,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(51,232,90,.015) 1px,transparent 1px);
+  background-size:52px 52px;}
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;overflow:hidden;}
+header{display:flex;align-items:center;gap:12px;padding:0 14px;height:48px;flex-shrink:0;
+  background:var(--surface);border-bottom:1px solid var(--border-hi);position:relative;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--green) 25%,var(--green) 75%,transparent);opacity:.35;}
+.logo{font-family:var(--font-hud);font-size:11px;font-weight:700;letter-spacing:4px;color:var(--green);white-space:nowrap;flex-shrink:0;}
+.logo-sep{color:var(--amber);}
+.header-mid{flex:1;display:flex;align-items:center;gap:8px;overflow:hidden;min-width:0;}
+.active-tag{display:none;align-items:center;gap:6px;padding:2px 10px 2px 8px;border:1px solid var(--border-hi);
+  background:var(--green-glow);font-family:var(--font-mono);font-size:9px;color:var(--green);
+  letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.active-tag.show{display:flex;}
+.tag-arr{color:var(--amber);font-size:7px;}
+.spin-pill{display:none;align-items:center;gap:5px;padding:2px 8px;border:1px solid var(--amber-dim);
+  background:var(--amber-glow);font-family:var(--font-mono);font-size:9px;color:var(--amber);
+  letter-spacing:1px;animation:puls 1s ease-in-out infinite;}
+.spin-pill.show{display:flex;}
+@keyframes puls{0%,100%{opacity:1}50%{opacity:.4}}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);
+  animation:blink 2.5s ease-in-out infinite;display:inline-block;margin-right:4px;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.clock{font-family:var(--font-mono);font-size:10px;color:var(--text-lo);}
+.hdr-btn{background:none;border:1px solid var(--border-hi);color:var(--text-lo);cursor:pointer;
+  font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:3px 8px;transition:all .2s;}
+.hdr-btn:hover,.hdr-btn:active{border-color:var(--green);color:var(--green);}
+.mob-nav{display:none;flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);
+  overflow-x:auto;white-space:nowrap;}
+.mob-nav::-webkit-scrollbar{display:none;}
+.mob-tab{display:inline-flex;align-items:center;gap:5px;padding:10px 16px;font-family:var(--font-mono);
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;border:none;border-bottom:2px solid transparent;
+  background:transparent;color:var(--text-lo);cursor:pointer;transition:all .15s;}
+.mob-tab.on{color:var(--green);border-bottom-color:var(--green);background:var(--green-glow);}
+.body{flex:1;display:grid;grid-template-columns:210px 1fr 260px;overflow:hidden;}
+.sidebar{border-right:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sidebar-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--text-lo);}
+.add-btn{width:22px;height:22px;border:1px solid var(--border-hi);background:transparent;color:var(--green);
+  cursor:pointer;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.add-btn:hover{background:var(--green-glow2);border-color:var(--green);}
+.games-list{flex:1;overflow-y:auto;padding:5px;}
+.games-list::-webkit-scrollbar{width:2px;}
+.games-list::-webkit-scrollbar-thumb{background:var(--border-hi);}
+.no-games{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px;text-align:center;gap:8px;}
+.no-games-icon{font-size:26px;opacity:.18;}
+.no-games-t{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);text-transform:uppercase;}
+.no-games-s{font-family:var(--font-mono);font-size:10px;color:var(--text-lo);line-height:1.8;}
+.game-card{padding:8px 10px;margin-bottom:3px;border:1px solid transparent;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
+.game-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:transparent;transition:background .15s;}
+.game-card:hover{border-color:var(--border);background:var(--panel);}
+.game-card.active{border-color:var(--border-hi);background:var(--green-glow);}
+.game-card.active::before{background:var(--green);box-shadow:0 0 8px var(--green);}
+.gc-name{font-family:var(--font-body);font-weight:600;font-size:12px;color:var(--text-hi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:18px;}
+.gc-meta{margin-top:2px;font-family:var(--font-mono);font-size:9px;color:var(--amber);}
+.gc-del{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;
+  color:transparent;cursor:pointer;font-size:11px;padding:2px 4px;transition:all .13s;}
+.game-card:hover .gc-del{color:var(--text-lo);}
+.gc-del:hover{color:var(--red)!important;}
+.chat-area{display:flex;flex-direction:column;background:var(--bg);overflow:hidden;position:relative;}
+.err-bar{display:none;align-items:center;gap:8px;padding:5px 13px;border-bottom:1px solid rgba(232,64,64,.3);
+  background:var(--red-glow);font-family:var(--font-mono);font-size:10px;color:var(--red);flex-shrink:0;}
+.err-bar.show{display:flex;}
+.quick-strip{padding:6px 12px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;gap:4px;overflow-x:auto;flex-shrink:0;}
+.quick-strip::-webkit-scrollbar{height:2px;}
+.quick-strip::-webkit-scrollbar-thumb{background:var(--border-hi);}
+.qbtn{padding:3px 10px;font-family:var(--font-mono);font-size:9px;letter-spacing:.5px;border:1px solid var(--border-hi);
+  background:transparent;color:var(--text-lo);cursor:pointer;transition:all .13s;white-space:nowrap;flex-shrink:0;}
+.qbtn:hover,.qbtn:active{border-color:var(--green);color:var(--green);background:var(--green-glow);}
+.qbtn.amb:hover,.qbtn.amb:active{border-color:var(--amber);color:var(--amber);background:var(--amber-glow);}
+.qbtn:disabled{opacity:.3;cursor:not-allowed;}
+.pacing-bar{display:flex;align-items:center;gap:7px;padding:4px 12px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;}
+.pacing-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);}
+.pbtn{padding:2px 9px;font-family:var(--font-mono);font-size:9px;border:1px solid var(--border);background:transparent;color:var(--text-lo);cursor:pointer;transition:all .13s;}
+.pbtn.on{border-color:var(--green);color:var(--green);background:var(--green-glow);}
+.pbtn:hover:not(.on){border-color:var(--border-hi);color:var(--text);}
+.msgs{flex:1;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;}
+.msgs::-webkit-scrollbar{width:3px;}
+.msgs::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:2px;}
+.boot-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:32px;animation:fadeUp .5s ease;}
+.boot-icon{font-size:32px;opacity:.15;}
+.boot-title{font-family:var(--font-hud);font-size:10px;font-weight:700;letter-spacing:5px;color:var(--green);text-transform:uppercase;}
+.boot-sub{font-family:var(--font-mono);font-size:11px;color:var(--text-lo);line-height:1.9;max-width:320px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes scanIn{from{opacity:0;clip-path:inset(100% 0 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+.msg{display:flex;flex-direction:column;max-width:92%;animation:scanIn .2s ease;flex-shrink:0;}
+.msg.user{align-self:flex-end;align-items:flex-end;}
+.msg.ai{align-self:flex-start;align-items:flex-start;}
+.msg-who{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);margin-bottom:3px;text-transform:uppercase;}
+.msg.user .msg-who{color:var(--amber-dim);}
+.msg-body{padding:9px 13px;font-size:13px;line-height:1.7;color:var(--text-hi);word-break:break-word;}
+.msg.user .msg-body{background:var(--amber-glow);border:1px solid var(--amber-dim);border-right:2px solid var(--amber);}
+.msg.ai .msg-body{background:var(--green-glow);border:1px solid var(--border-hi);border-left:2px solid var(--green);}
+.msg-body p{margin-bottom:7px;}.msg-body p:last-child{margin-bottom:0;}
+.msg-body strong{color:var(--green);font-weight:600;}
+.msg-body em{color:var(--amber);font-style:normal;}
+.msg-body code{background:rgba(0,0,0,.4);padding:1px 5px;font-family:var(--font-mono);font-size:11px;color:var(--amber);}
+.msg-body pre{background:rgba(0,0,0,.4);padding:10px;margin:7px 0;overflow-x:auto;font-family:var(--font-mono);font-size:11px;color:var(--amber);border-left:2px solid var(--amber-dim);}
+.msg-body ul,.msg-body ol{padding-left:17px;margin:5px 0 7px;}
+.msg-body li{margin-bottom:3px;font-size:13px;}
+.msg-body h1{font-family:var(--font-mono);font-size:11px;letter-spacing:3px;color:var(--green);margin:9px 0 5px;text-transform:uppercase;}
+.msg-body h2,.msg-body h3{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--amber);margin:9px 0 4px;text-transform:uppercase;}
+.msg-body hr{border:none;border-top:1px solid var(--border-hi);margin:9px 0;}
+.msg-body a{color:var(--green);text-decoration:none;border-bottom:1px solid var(--green-dim);}
+.spoiler-banner{display:flex;align-items:center;gap:8px;padding:6px 10px;margin-bottom:9px;border:1px solid var(--amber);
+  background:var(--amber-glow2);font-family:var(--font-mono);font-size:10px;color:var(--amber);letter-spacing:1px;}
+.typing-msg{align-self:flex-start;flex-shrink:0;}
+.typing-dots{display:flex;gap:5px;padding:10px 14px;border:1px solid var(--border-hi);border-left:2px solid var(--green);background:var(--green-glow);}
+.tdot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:bounce 1.3s ease-in-out infinite;}
+.tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-6px);opacity:1}}
+.input-area{padding:9px 12px calc(9px + var(--sb)) 12px;border-top:1px solid var(--border-hi);
+  background:var(--surface);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
+.chat-input{flex:1;background:var(--panel);border:1px solid var(--border);border-bottom:2px solid var(--border-hi);
+  color:var(--text-hi);padding:8px 12px;font-family:var(--font-body);font-size:14px;resize:none;
+  min-height:40px;max-height:110px;outline:none;line-height:1.5;transition:border-color .2s;
+  -webkit-appearance:none;border-radius:0;}
+.chat-input:focus{border-color:var(--green);border-bottom-color:var(--green);}
+.chat-input::placeholder{color:var(--text-lo);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;}
+.send-btn{width:40px;height:40px;flex-shrink:0;border:1px solid var(--green);background:var(--green-glow);
+  color:var(--green);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.send-btn:hover,.send-btn:active{background:var(--green-glow2);}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;}
+.scroll-btn{position:absolute;bottom:70px;right:12px;width:26px;height:26px;border:1px solid var(--border-hi);
+  background:var(--surface);color:var(--text-lo);cursor:pointer;font-size:13px;
+  display:none;align-items:center;justify-content:center;transition:all .14s;z-index:10;}
+.scroll-btn.show{display:flex;}
+.scroll-btn:hover{border-color:var(--green);color:var(--green);}
+.utilities{border-left:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;overflow:hidden;}
+.util-tabs{display:flex;border-bottom:1px solid var(--border-hi);flex-shrink:0;}
+.utab{flex:1;padding:9px 6px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text-lo);cursor:pointer;transition:all .15s;}
+.utab.on{color:var(--green);border-bottom-color:var(--green);background:var(--green-glow);}
+.utab:hover:not(.on){color:var(--text);}
+.upanel{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.upanel.on{display:flex;}
+.util-bar{padding:6px 11px;border-bottom:1px solid var(--border);flex-shrink:0;font-family:var(--font-mono);
+  font-size:9px;letter-spacing:2px;color:var(--text-lo);display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;}
+.util-bar .gname{color:var(--green);overflow:hidden;text-overflow:ellipsis;}
+.notes-ta{flex:1;background:transparent;border:none;color:var(--text-hi);padding:11px 12px;
+  font-family:var(--font-mono);font-size:11px;line-height:1.85;resize:none;outline:none;}
+.notes-ta::placeholder{color:var(--text-lo);}
+.notes-foot{padding:6px 11px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.notes-chars{font-family:var(--font-mono);font-size:9px;color:var(--text-lo);}
+.save-btn{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--green);background:transparent;
+  border:1px solid var(--border-hi);padding:3px 11px;cursor:pointer;transition:all .17s;}
+.save-btn:hover{background:var(--green-glow);border-color:var(--green);}
+.save-btn.saved{color:var(--amber);border-color:var(--amber-dim);}
+.tasks-top{padding:7px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.task-in{flex:1;background:var(--panel);border:1px solid var(--border);color:var(--text-hi);padding:5px 8px;
+  font-family:var(--font-mono);font-size:11px;outline:none;transition:border-color .2s;border-radius:0;}
+.task-in:focus{border-color:var(--amber);}
+.task-add-btn{width:26px;height:26px;border:1px solid var(--amber-dim);background:var(--amber-glow);
+  color:var(--amber);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .14s;}
+.task-add-btn:hover{border-color:var(--amber);background:var(--amber-glow2);}
+.tasks-list{flex:1;overflow-y:auto;padding:5px 11px;}
+.tasks-list::-webkit-scrollbar{width:2px;}
+.tasks-list::-webkit-scrollbar-thumb{background:var(--border-hi);}
+.tasks-empty{padding:18px 0;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-lo);}
+.task-item{display:flex;align-items:flex-start;gap:7px;padding:7px 0;border-bottom:1px solid var(--border);}
+.task-chk{width:12px;height:12px;flex-shrink:0;margin-top:2px;border:1px solid var(--border-hi);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:8px;transition:all .14s;}
+.task-chk.done{border-color:var(--amber);background:var(--amber-glow2);color:var(--amber);}
+.task-text{flex:1;font-family:var(--font-mono);font-size:11px;color:var(--text);line-height:1.5;word-break:break-word;}
+.task-text.done{color:var(--text-lo);text-decoration:line-through;}
+.task-del{background:none;border:none;color:transparent;cursor:pointer;font-size:10px;padding:0 3px;transition:all .13s;flex-shrink:0;}
+.task-item:hover .task-del{color:var(--text-lo);}
+.task-del:hover{color:var(--red)!important;}
+.modal-bg{display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.85);
+  align-items:center;justify-content:center;padding:20px;}
+.modal-bg.show{display:flex;animation:fadeUp .15s ease;}
+.modal{background:var(--panel-hi);border:1px solid var(--border-hi);width:100%;max-width:380px;padding:24px;position:relative;}
+.modal::before{content:'';position:absolute;top:-1px;left:-1px;width:13px;height:13px;border-top:2px solid var(--green);border-left:2px solid var(--green);}
+.modal::after{content:'';position:absolute;bottom:-1px;right:-1px;width:13px;height:13px;border-bottom:2px solid var(--green);border-right:2px solid var(--green);}
+.modal-title{font-family:var(--font-hud);font-size:10px;font-weight:700;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:20px;}
+.fgroup{margin-bottom:13px;}
+.flabel{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-lo);margin-bottom:5px;text-transform:uppercase;}
+.finput,.fselect{width:100%;background:var(--surface);border:1px solid var(--border-hi);color:var(--text-hi);
+  padding:8px 10px;font-family:var(--font-mono);font-size:12px;outline:none;transition:border-color .2s;
+  -webkit-appearance:none;border-radius:0;}
+.finput:focus,.fselect:focus{border-color:var(--green);}
+.fselect option{background:var(--panel-hi);}
+.modal-btns{display:flex;gap:8px;margin-top:20px;}
+.mbtn{padding:8px 18px;font-family:var(--font-hud);font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;border:1px solid;cursor:pointer;transition:all .2s;}
+.mbtn-p{border-color:var(--green);background:var(--green-glow);color:var(--green);}
+.mbtn-p:hover{background:var(--green-glow2);}
+.mbtn-g{border-color:var(--border);background:transparent;color:var(--text-lo);}
+.mbtn-g:hover{border-color:var(--text-lo);color:var(--text);}
+.mob-close-bar{display:none;align-items:center;justify-content:space-between;
+  padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.mob-close-title{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--text-lo);}
+.mob-close-btn{background:none;border:1px solid var(--border-hi);color:var(--text-lo);
+  cursor:pointer;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:3px 9px;}
+@media(max-width:768px){
+  .sidebar,.utilities{display:none;}
+  .body{grid-template-columns:1fr;}
+  .mob-nav{display:block;}
+  .sidebar.mob-show,.utilities.mob-show{
+    display:flex;position:fixed;inset:0;z-index:2000;
+    background:var(--surface);flex-direction:column;
+  }
+  .mob-close-bar{display:flex;}
+}
+@media(min-width:769px){.mob-nav,.mob-close-bar{display:none!important;}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="logo">COMP<span class="logo-sep">::</span>OPS</div>
+  <div class="header-mid">
+    <div class="active-tag" id="activeTag"><span class="tag-arr">&#9658;</span><span id="activeTagName"></span></div>
+    <div class="spin-pill" id="spinPill">&#x27F3; SEARCHING...</div>
+  </div>
+  <div class="header-right">
+    <span class="clock"><span class="dot"></span><span id="clock">--:--</span></span>
+    <button class="hdr-btn" onclick="openAddGame()">+ GAME</button>
+  </div>
+</header>
+
+<nav class="mob-nav">
+  <button class="mob-tab on" onclick="mobTab('chat',this)">&#128172; CHAT</button>
+  <button class="mob-tab" onclick="mobTab('games',this)">&#127918; GAMES</button>
+  <button class="mob-tab" onclick="mobTab('notes',this)">&#128221; NOTES</button>
+  <button class="mob-tab" onclick="mobTab('tasks',this)">&#9989; REMINDERS</button>
+</nav>
+
+<div class="body">
+<aside class="sidebar" id="sidebarEl">
+  <div class="mob-close-bar">
+    <span class="mob-close-title">// ACTIVE OPS</span>
+    <button class="mob-close-btn" onclick="closeMob('sidebarEl')">CLOSE</button>
+  </div>
+  <div class="sidebar-head">
+    <span class="sidebar-lbl">// ACTIVE OPS</span>
+    <button class="add-btn" onclick="openAddGame()">+</button>
+  </div>
+  <div class="games-list" id="gamesList"></div>
+</aside>
+
+<main class="chat-area" id="chatEl">
+  <div class="err-bar" id="errBar"></div>
+  <div class="quick-strip">
+    <button class="qbtn"     onclick="qa('hint')">&#128161; Hint</button>
+    <button class="qbtn amb" onclick="qa('spoil')">&#9888; Spoil It</button>
+    <button class="qbtn"     onclick="qa('guide')">&#128269; Guide</button>
+    <button class="qbtn"     onclick="qa('lore')">&#128218; Lore</button>
+    <button class="qbtn"     onclick="qa('build')">&#9881; Build</button>
+    <button class="qbtn"     onclick="qa('trophy')">&#127942; Trophies</button>
+    <button class="qbtn"     onclick="qa('secrets')">&#129370; Secrets</button>
+    <button class="qbtn"     onclick="qa('ending')">&#127937; Best Ending</button>
+    <button class="qbtn"     onclick="qa('hard')">&#128128; Hard Mode</button>
+  </div>
+  <div class="pacing-bar">
+    <span class="pacing-lbl">PACING:</span>
+    <button class="pbtn on" id="pbStep" onclick="setPacing('step')">STEP-BY-STEP</button>
+    <button class="pbtn"    id="pbFull" onclick="setPacing('full')">FULL DUMP</button>
+  </div>
+  <div class="msgs" id="msgs">
+    <div class="boot-screen" id="bootScreen">
+      <div class="boot-icon">&#128225;</div>
+      <div class="boot-title">// AWAITING MISSION BRIEF</div>
+      <div class="boot-sub">Add a game and select it.<br>Tell me where you're stuck — I'll only step in when you need it.</div>
+    </div>
+  </div>
+  <button class="scroll-btn" id="scrollBtn" onclick="scrollBot()">&#8595;</button>
+  <div class="input-area">
+    <textarea class="chat-input" id="chatInput" placeholder="ENTER SITREP..." rows="1"
+      onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMsg()">&#10148;</button>
+  </div>
+</main>
+
+<aside class="utilities" id="utilEl">
+  <div class="mob-close-bar">
+    <span class="mob-close-title" id="utilMobTitle">// NOTES</span>
+    <button class="mob-close-btn" onclick="closeMob('utilEl')">CLOSE</button>
+  </div>
+  <div class="util-tabs">
+    <button class="utab on" id="utab-notes" onclick="switchU('notes',this)">NOTES</button>
+    <button class="utab"    id="utab-tasks" onclick="switchU('tasks',this)">DON'T FORGET</button>
+  </div>
+  <div class="upanel on" id="panel-notes">
+    <div class="util-bar" id="notesBar">// SELECT A GAME</div>
+    <textarea class="notes-ta" id="notesTa" placeholder="Jot anything — locations, passwords, NPC names, codes..."></textarea>
+    <div class="notes-foot">
+      <span class="notes-chars" id="notesChars">0 chars</span>
+      <button class="save-btn" id="saveBtn" onclick="saveNotes()">SAVE</button>
+    </div>
+  </div>
+  <div class="upanel" id="panel-tasks">
+    <div class="util-bar" id="tasksBar">// SELECT A GAME</div>
+    <div class="tasks-top">
+      <input class="task-in" id="taskIn" placeholder="Add reminder..." onkeydown="if(event.key==='Enter')addTask()">
+      <button class="task-add-btn" onclick="addTask()">+</button>
+    </div>
+    <div class="tasks-list" id="tasksList"></div>
+  </div>
+</aside>
+</div>
+</div>
+
+<div class="modal-bg" id="addModal">
+  <div class="modal">
+    <div class="modal-title">// NEW OP</div>
+    <div class="fgroup">
+      <label class="flabel">GAME TITLE</label>
+      <input class="finput" id="gameNameIn" placeholder="e.g. Elden Ring" onkeydown="if(event.key==='Enter')addGame()">
+    </div>
+    <div class="fgroup">
+      <label class="flabel">PLATFORM</label>
+      <select class="fselect" id="gamePlatIn">
+        <option>PS5</option><option>PS4</option><option>PC</option>
+        <option value="PS5 / PC">PS5 / PC</option><option>Xbox</option><option>Other</option>
+      </select>
+    </div>
+    <div class="fgroup">
+      <label class="flabel">CURRENT SITUATION (optional)</label>
+      <input class="finput" id="gameSitIn" placeholder="e.g. Act 2, stuck on Margit boss">
+    </div>
+    <div class="modal-btns">
+      <button class="mbtn mbtn-p" onclick="addGame()">DEPLOY</button>
+      <button class="mbtn mbtn-g" onclick="closeM('addModal')">ABORT</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var WORKER_URL='https://dawn-hat-38e5.moron4gyy.workers.dev/';
+var games=[],activeId=null,pacing='step',busy=false,hist={};
+
+function boot(){
+  try{games=JSON.parse(localStorage.getItem('cmp_games')||'[]');}catch(e){games=[];}
+  try{hist=JSON.parse(localStorage.getItem('cmp_hist')||'{}');}catch(e){hist={};}
+  activeId=localStorage.getItem('cmp_active')||null;
+  pacing=localStorage.getItem('cmp_pacing')||'step';
+  setPacing(pacing);renderGames();
+  if(activeId&&games.find(function(g){return g.id===activeId;}))selectGame(activeId,false);
+  tickClock();setInterval(tickClock,10000);
+  setInterval(function(){if(activeId)localStorage.setItem('cmp_notes_'+activeId,document.getElementById('notesTa').value);},10000);
+  document.getElementById('msgs').addEventListener('scroll',function(){
+    document.getElementById('scrollBtn').classList.toggle('show',this.scrollHeight-this.scrollTop-this.clientHeight>80);
+  });
+  if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+
+function tickClock(){var d=new Date();document.getElementById('clock').textContent=pad(d.getHours())+':'+pad(d.getMinutes());}
+function pad(n){return String(n).padStart(2,'0');}
+function saveGames(){localStorage.setItem('cmp_games',JSON.stringify(games));}
+function saveHist(){localStorage.setItem('cmp_hist',JSON.stringify(hist));}
+
+function renderGames(){
+  var el=document.getElementById('gamesList');
+  if(!games.length){
+    el.innerHTML='<div class="no-games"><div class="no-games-icon">&#127918;</div><div class="no-games-t">NO ACTIVE OPS</div><div class="no-games-s">Tap + to start<br>tracking a game</div></div>';
+    return;
+  }
+  el.innerHTML=games.map(function(g){
+    return'<div class="game-card'+(g.id===activeId?' active':'')+'" onclick="selectGame(\''+g.id+'\',true)">'+
+    '<div class="gc-name">'+esc(g.name)+'</div><div class="gc-meta">'+esc(g.platform)+'</div>'+
+    '<button class="gc-del" onclick="delGame(event,\''+g.id+'\')">&#10005;</button></div>';
+  }).join('');
+}
+
+function selectGame(id,greet){
+  activeId=id;localStorage.setItem('cmp_active',id);renderGames();
+  var g=games.find(function(x){return x.id===id;});if(!g)return;
+  document.getElementById('activeTagName').textContent=g.name+' \u00b7 '+g.platform;
+  document.getElementById('activeTag').classList.add('show');
+  renderHist(id);
+  if(greet&&(!hist[id]||!hist[id].length))sendGreeting(g);
+  loadNotes(id);loadTasks(id);
+  var n=esc(g.name);
+  document.getElementById('notesBar').innerHTML='// NOTES &nbsp;<span class="gname">'+n+'</span>';
+  document.getElementById('tasksBar').innerHTML='// REMINDERS &nbsp;<span class="gname">'+n+'</span>';
+  if(window.innerWidth<=768)closeMob('sidebarEl');
+}
+
+function renderHist(id){
+  var el=document.getElementById('msgs');el.innerHTML='';
+  var h=hist[id]||[];
+  if(!h.length){
+    el.innerHTML='<div class="boot-screen" id="bootScreen"><div class="boot-icon">&#128225;</div>'+
+    '<div class="boot-title">// AWAITING MISSION BRIEF</div>'+
+    '<div class="boot-sub">Tell me where you\'re stuck.<br>I\'ll only step in when you need it.</div></div>';
+  }else{h.forEach(function(m){bubble(m.role,m.content);});}
+  scrollBot();
+}
+
+function openAddGame(){
+  document.getElementById('gameNameIn').value='';document.getElementById('gameSitIn').value='';
+  document.getElementById('gameNameIn').style.borderColor='';
+  document.getElementById('addModal').classList.add('show');
+  setTimeout(function(){document.getElementById('gameNameIn').focus();},60);
+}
+function addGame(){
+  var name=document.getElementById('gameNameIn').value.trim();
+  if(!name){document.getElementById('gameNameIn').style.borderColor='var(--red)';return;}
+  document.getElementById('gameNameIn').style.borderColor='';
+  var plat=document.getElementById('gamePlatIn').value;
+  var sit=document.getElementById('gameSitIn').value.trim();
+  var id='g_'+Date.now()+'_'+Math.random().toString(36).slice(2,5);
+  games.push({id:id,name:name,platform:plat,situation:sit});
+  hist[id]=[];saveGames();saveHist();closeM('addModal');renderGames();selectGame(id,true);
+}
+function delGame(e,id){
+  e.stopPropagation();
+  if(!confirm('Remove this game? History and notes will be deleted.'))return;
+  games=games.filter(function(g){return g.id!==id;});
+  delete hist[id];localStorage.removeItem('cmp_notes_'+id);localStorage.removeItem('cmp_tasks_'+id);
+  saveGames();saveHist();
+  if(activeId===id){
+    activeId=games.length?games[games.length-1].id:null;
+    localStorage.setItem('cmp_active',activeId||'');
+    document.getElementById('activeTag').classList.remove('show');
+    document.getElementById('msgs').innerHTML='<div class="boot-screen"><div class="boot-icon">&#128225;</div><div class="boot-title">// AWAITING MISSION BRIEF</div><div class="boot-sub">Add a game to get started.</div></div>';
+    document.getElementById('notesBar').textContent='// SELECT A GAME';
+    document.getElementById('tasksBar').textContent='// SELECT A GAME';
+    document.getElementById('notesTa').value='';document.getElementById('tasksList').innerHTML='';
+    if(activeId)selectGame(activeId,false);
+  }
+  renderGames();
+}
+
+function setPacing(mode){
+  pacing=mode;localStorage.setItem('cmp_pacing',mode);
+  document.getElementById('pbStep').classList.toggle('on',mode==='step');
+  document.getElementById('pbFull').classList.toggle('on',mode==='full');
+}
+
+var QP={
+  hint:'Give me a nudge in the right direction \u2014 no spoilers, just enough to unblock me.',
+  spoil:'Spoil it completely \u2014 full answer, I don\'t care about spoilers.',
+  guide:'Find me a walkthrough or guide for exactly where I\'m at. Check Reddit, IGN, or PowerPyx.',
+  lore:'Break down the lore and story at this point. Who are the key players and what\'s at stake?',
+  build:'Optimize my build. I\'m a veteran \u2014 specific items, stats, and numbers please.',
+  trophy:'What trophies or achievements should I focus on right now? Any missables coming up?',
+  secrets:'Any Easter eggs, secrets, or hidden items in this area or at this point?',
+  ending:'What\'s the best ending route? Which choices and decisions actually matter?',
+  hard:'Hardest-difficulty tips for this section \u2014 what makes it brutal and how do I handle it?'
+};
+function qa(key){if(!activeId){alert('Select a game first!');return;}if(busy)return;sendMsg(QP[key]);}
+
+function sysP(g){
+  return'You are COMPANION \u2014 a gaming assistant for a veteran player. Friendly, casual, direct \u2014 like a knowledgeable mate who knows everything about games. No condescension, no explaining basics.\n\n'+
+  'CURRENT GAME: '+g.name+' ('+g.platform+')'+(g.situation?'\nCURRENT SITUATION: '+g.situation:'')+'\n\n'+
+  'PLAYER PROFILE:\n- Veteran skill level \u2014 skip basics, get to what matters\n'+
+  '- Platforms: PlayStation (PS4/PS5) and PC\n'+
+  '- Preferred sources: Reddit (game subreddits), IGN, PowerPyx (especially trophies)\n'+
+  '- Always interested in: trophy hunting, Easter eggs & secrets, best ending routes, hardest-mode tips\n\n'+
+  'SPOILER POLICY: If your response contains major plot spoilers, start with exactly:\n\u26a0\ufe0f SPOILER WARNING\nThen continue.\n\n'+
+  'PACING: '+(pacing==='step'?'STEP-BY-STEP \u2014 One step or piece of info at a time. Ask if they want more.':'FULL DUMP \u2014 Complete comprehensive answer. Hold nothing back.')+'\n\n'+
+  'RULES: Format with ## headers and bullet points. For builds: specific item names and stats. If unsure, say so. Be tight and useful.';
+}
+
+async function sendGreeting(g){
+  await callWorker(g,'Hey, just loaded up '+g.name+' on '+g.platform+'.'+(g.situation?' Currently: '+g.situation+'.':'')+' Ready when you need me.',true);
+}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+async function sendMsg(override){
+  if(busy)return;
+  if(!activeId){alert('Select a game first!');return;}
+  var inp=document.getElementById('chatInput');
+  var text=override||inp.value.trim();if(!text)return;
+  if(!override){inp.value='';autoResize(inp);}
+  var bs=document.getElementById('bootScreen');if(bs)bs.remove();
+  var g=games.find(function(x){return x.id===activeId;});if(!g)return;
+  await callWorker(g,text,false);
+}
+
+async function callWorker(g,userText,isGreeting){
+  busy=true;setUI(true);hideErr();
+  if(!isGreeting){bubble('user',userText);pushH(g.id,'user',userText);}
+  var typEl=showTyping();
+  var mightSearch=/guide|walkthrough|wiki|where|how (do|to)|find|location|boss|trophy|achievement|build|tip|strategy|secret|easter/i.test(userText);
+  if(mightSearch)document.getElementById('spinPill').classList.add('show');
+  try{
+    var messages=(hist[g.id]||[]).map(function(m){return{role:m.role,content:m.content};});
+    if(isGreeting)messages.push({role:'user',content:userText});
+    var resp=await fetch(WORKER_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:sysP(g),messages:messages})
+    });
+    if(!resp.ok){
+      var em='Server error '+resp.status;
+      try{var ed=await resp.json();em=ed.error||em;}catch(x){}
+      throw new Error(em);
+    }
+    var data=await resp.json();
+    var aiText=data.content||data.text||data.message||'';
+    typEl.remove();document.getElementById('spinPill').classList.remove('show');
+    if(aiText&&aiText.trim()){bubble('ai',aiText);pushH(g.id,'assistant',aiText);}
+  }catch(err){
+    typEl.remove();document.getElementById('spinPill').classList.remove('show');
+    var msg=err.message;
+    if(msg.indexOf('Failed to fetch')>-1||msg.indexOf('NetworkError')>-1||msg.indexOf('WORKER_URL')>-1){
+      msg='Cannot reach server. Make sure your Cloudflare Worker is deployed and WORKER_URL is updated in index.html.';
+    }
+    showErr('\u26a0 '+msg);bubble('ai','**ERROR:** '+msg);
+  }
+  busy=false;setUI(false);scrollBot();
+}
+
+function pushH(gid,role,content){
+  if(!hist[gid])hist[gid]=[];
+  hist[gid].push({role:role,content:content});
+  if(hist[gid].length>50)hist[gid]=hist[gid].slice(-50);
+  saveHist();
+}
+
+function bubble(role,content){
+  var el=document.createElement('div');
+  if(role==='user'){
+    el.className='msg user';
+    el.innerHTML='<div class="msg-who">YOU</div><div class="msg-body">'+esc(content).replace(/\n/g,'<br>')+'</div>';
+  }else{
+    el.className='msg ai';
+    var hasSp=/\u26a0\ufe0f SPOILER WARNING/i.test(content);
+    var body=hasSp
+      ?'<div class="spoiler-banner">\u26a0\ufe0f SPOILER WARNING \u2014 PROCEED WITH CAUTION</div>'+md(content.replace(/\u26a0\ufe0f SPOILER WARNING[^\n]*/i,'').trim())
+      :md(content);
+    el.innerHTML='<div class="msg-who">COMPANION</div><div class="msg-body">'+body+'</div>';
+  }
+  document.getElementById('msgs').appendChild(el);scrollBot();
+}
+
+function md(raw){
+  var t=raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t=t.replace(/```[\w]*\n?([\s\S]*?)```/g,function(_,c){return'<pre>'+c.trim()+'</pre>';});
+  t=t.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>');
+  t=t.replace(/^---+$/gm,'<hr>');
+  t=t.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*\n]+)\*/g,'<em>$1</em>');
+  t=t.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  t=t.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  var lines=t.split('\n'),out=[],inUl=false,inOl=false;
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i];
+    var ul=l.match(/^[\s]*[-*\u2022]\s+(.+)/),ol=l.match(/^[\s]*\d+\.\s+(.+)/);
+    if(ul){if(!inUl){out.push('<ul>');inUl=true;}if(inOl){out.push('</ol>');inOl=false;}out.push('<li>'+ul[1]+'</li>');}
+    else if(ol){if(!inOl){out.push('<ol>');inOl=true;}if(inUl){out.push('</ul>');inUl=false;}out.push('<li>'+ol[1]+'</li>');}
+    else{if(inUl){out.push('</ul>');inUl=false;}if(inOl){out.push('</ol>');inOl=false;}out.push(l);}
+  }
+  if(inUl)out.push('</ul>');if(inOl)out.push('</ol>');
+  return out.join('\n').split(/\n{2,}/).map(function(b){
+    b=b.trim();if(!b)return'';
+    if(/^<(ul|ol|h[1-6]|pre|hr)/.test(b))return b;
+    return'<p>'+b.replace(/\n/g,'<br>')+'</p>';
+  }).join('');
+}
+
+function showTyping(){
+  var el=document.createElement('div');el.className='typing-msg msg ai';
+  el.innerHTML='<div class="msg-who">COMPANION</div><div class="typing-dots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>';
+  document.getElementById('msgs').appendChild(el);scrollBot();return el;
+}
+function setUI(on){document.getElementById('sendBtn').disabled=on;document.querySelectorAll('.qbtn').forEach(function(b){b.disabled=on;});}
+function showErr(m){var b=document.getElementById('errBar');b.textContent=m;b.classList.add('show');setTimeout(function(){b.classList.remove('show');},8000);}
+function hideErr(){document.getElementById('errBar').classList.remove('show');}
+function scrollBot(){var e=document.getElementById('msgs');e.scrollTop=e.scrollHeight;}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+
+function loadNotes(id){document.getElementById('notesTa').value=localStorage.getItem('cmp_notes_'+id)||'';updChars();}
+function saveNotes(){
+  if(!activeId)return;
+  localStorage.setItem('cmp_notes_'+activeId,document.getElementById('notesTa').value);
+  var b=document.getElementById('saveBtn');b.textContent='SAVED \u2713';b.classList.add('saved');
+  setTimeout(function(){b.textContent='SAVE';b.classList.remove('saved');},1500);
+}
+function updChars(){document.getElementById('notesChars').textContent=document.getElementById('notesTa').value.length+' chars';}
+document.getElementById('notesTa').addEventListener('input',updChars);
+
+function getTasks(id){try{return JSON.parse(localStorage.getItem('cmp_tasks_'+id)||'[]');}catch(e){return[];}}
+function saveTasks(id,t){localStorage.setItem('cmp_tasks_'+id,JSON.stringify(t));}
+function loadTasks(id){renderTasks(getTasks(id));}
+function renderTasks(tasks){
+  var el=document.getElementById('tasksList');
+  if(!tasks.length){el.innerHTML='<div class="tasks-empty">NO REMINDERS YET</div>';return;}
+  el.innerHTML=tasks.map(function(t,i){
+    return'<div class="task-item"><div class="task-chk'+(t.done?' done':'')+'" onclick="toggleTask('+i+')">'+(t.done?'\u2713':'')+'</div>'+
+    '<div class="task-text'+(t.done?' done':'')+'">'+esc(t.text)+'</div>'+
+    '<button class="task-del" onclick="delTask('+i+')">\u2715</button></div>';
+  }).join('');
+}
+function addTask(){
+  if(!activeId)return;
+  var inp=document.getElementById('taskIn'),txt=inp.value.trim();if(!txt)return;
+  var t=getTasks(activeId);t.push({text:txt,done:false});saveTasks(activeId,t);renderTasks(t);inp.value='';
+}
+function toggleTask(i){if(!activeId)return;var t=getTasks(activeId);t[i].done=!t[i].done;saveTasks(activeId,t);renderTasks(t);}
+function delTask(i){if(!activeId)return;var t=getTasks(activeId);t.splice(i,1);saveTasks(activeId,t);renderTasks(t);}
+
+function switchU(name,btn){
+  document.querySelectorAll('.utab').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.upanel').forEach(function(p){p.classList.remove('on');});
+  btn.classList.add('on');document.getElementById('panel-'+name).classList.add('on');
+}
+
+function mobTab(name,btn){
+  document.querySelectorAll('.mob-tab').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  document.getElementById('sidebarEl').classList.remove('mob-show');
+  document.getElementById('utilEl').classList.remove('mob-show');
+  document.getElementById('chatEl').style.display='';
+  if(name==='games'){
+    document.getElementById('chatEl').style.display='none';
+    document.getElementById('sidebarEl').classList.add('mob-show');
+  }else if(name==='notes'||name==='tasks'){
+    document.getElementById('chatEl').style.display='none';
+    document.getElementById('utilEl').classList.add('mob-show');
+    document.getElementById('utilMobTitle').textContent=name==='notes'?'// NOTES':'// DON\'T FORGET';
+    document.querySelectorAll('.utab').forEach(function(b){b.classList.remove('on');});
+    document.querySelectorAll('.upanel').forEach(function(p){p.classList.remove('on');});
+    document.getElementById('utab-'+name).classList.add('on');
+    document.getElementById('panel-'+name).classList.add('on');
+  }
+}
+function closeMob(elId){
+  document.getElementById(elId).classList.remove('mob-show');
+  document.getElementById('chatEl').style.display='';
+  document.querySelectorAll('.mob-tab').forEach(function(b){b.classList.remove('on');});
+  var f=document.querySelector('.mob-tab');if(f)f.classList.add('on');
+}
+
+function closeM(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.modal-bg').forEach(function(bg){
+  bg.addEventListener('click',function(e){if(e.target===bg)bg.classList.remove('show');});
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')document.querySelectorAll('.modal-bg.show').forEach(function(m){m.classList.remove('show');});
+});
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
+
+boot();
+</script>
+</body>
+</html>
